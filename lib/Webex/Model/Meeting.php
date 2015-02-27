@@ -1,46 +1,11 @@
 <?php
 
-class Webex_Model_Meeting
-    extends Webex_Model_Entity
-    implements Webex_Model_MeetingInterface
+class Webex_Model_Meeting extends Webex_Model_MeetingSummary
 {
-    /**
-     * An internal unique ID number for a Meeting Center session. Equivalent
-     * to meetingKey or eventID.
-     * @var string
-     */
-    protected $_id;
-
-    /**
-     * The session type ID for a Meeting Center session.
-     * @var int
-     */
-    protected $_type;
-
-    /**
-     * The name of the meeting, maximum of 512 characters.
-     * @var string
-     */
-    protected $_name;
-
     /**
      * @var string
      */
     protected $_password;
-
-    /**
-     * The starting date and time for the first (or only) occurrence of
-     * the meeting. It also stores information about the time zone for
-     * the geographic location of the meeting.
-     * @var DateTime
-     */
-    protected $_startDate;
-
-    /**
-     * The duration of the meeting in minutes.
-     * @var int
-     */
-    protected $_duration = 60;
 
     /**
      * @var bool
@@ -93,92 +58,6 @@ class Webex_Model_Meeting
      * @var bool
      */
     protected $_emailInvitations = false;
-
-    /**
-     * @return string
-     */
-    public function getId()
-    {
-        return $this->_id;
-    }
-
-    /**
-     * @param  string $id
-     */
-    public function setId($id)
-    {
-        $this->_id = (string) $id;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->_name;
-    }
-
-    /**
-     * @param  string $name
-     */
-    public function setName($name)
-    {
-        $this->_name = $name;
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getType()
-    {
-        return $this->_type;
-    }
-
-    /**
-     * @param  int $type
-     */
-    public function setType($type)
-    {
-        $this->_type = (int) $type;
-        return $this;
-    }
-
-    /**
-     * @return DateTime|null
-     */
-    public function getStartDate()
-    {
-        return $this->_startDate;
-    }
-
-    /**
-     * @param  int|string|DateTime $startDate
-     * @throws Exception
-     */
-    public function setStartDate($startDate)
-    {
-        $this->_startDate = Webex_Util_Time::toDateTime($startDate);
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getDuration()
-    {
-        return $this->_duration;
-    }
-
-    /**
-     * @param  int $duration
-     */
-    public function setDuration($duration)
-    {
-        $this->_duration = (int) $duration;
-        return $this;
-    }
 
     /**
      * @return string

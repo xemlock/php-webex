@@ -37,12 +37,17 @@ class Webex_XmlSerializer
         return $xml;
     } // }}}
 
-    public function serializeMeeting(Webex_Model_MeetingInterface $meeting, $wrap = true) // {{{
+    public function serializeMeeting(Webex_Model_Meeting $meeting, $wrap = true) // {{{
     {
         $xml = '';
 
         if ($wrap) {
             $xml .= '<meeting>';
+        }
+
+        $id = $meeting->getId();
+        if ($id) {
+            $xml .= '<meetingkey>' . $this->esc($id) . '</meetingkey>';
         }
 
         $xml .= '<accessControl>';
