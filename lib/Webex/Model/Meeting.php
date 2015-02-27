@@ -88,6 +88,13 @@ class Webex_Model_Meeting
     protected $_attendees;
 
     /**
+     * Whether to send invitation email messages to the meeting session
+     * attendees.
+     * @var bool
+     */
+    protected $_emailInvitations = false;
+
+    /**
      * @return string
      */
     public function getId()
@@ -266,6 +273,17 @@ class Webex_Model_Meeting
     public function setOpenTime($openTime)
     {
         $this->_openTime = (int) $openTime;
+        return $this;
+    }
+
+    public function getEmailInvitations()
+    {
+        return $this->_emailInvitations;
+    }
+
+    public function setEmailInvitations($flag)
+    {
+        $this->_emailInvitations = (bool) $flag;
         return $this;
     }
 

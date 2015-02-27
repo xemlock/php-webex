@@ -63,6 +63,15 @@ class Webex_Model_Collection implements IteratorAggregate, Countable
     }
 
     /**
+     * @return Webex_Model_Collection
+     */
+    public function clear()
+    {
+        $this->_items = array();
+        return $this;
+    }
+
+    /**
      * @return int
      */
     public function count()

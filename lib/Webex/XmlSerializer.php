@@ -2,23 +2,23 @@
 
 class Webex_XmlSerializer
 {
-    public function esc($value)
+    public function esc($value) // {{{
     {
-        return strtr($value, array(
+        return strtr((string) $value, array(
             '\'' => '&apos;',
             '"'  => '&quot;',
             '<'  => '&lt;',
             '>'  => '&gt;',
             '&'  => '&amp;',
         ));
-    }
+    } // }}}
 
-    public function b($value)
+    public function b($value) // {{{
     {
         return $value ? 'true' : 'false';
-    }
+    } // }}}
 
-    public function serializeAttendee(Webex_Model_Attendee $attendee, Webex_Model_Meeting $meeting)
+    public function serializeAttendee(Webex_Model_Attendee $attendee, Webex_Model_Meeting $meeting) // {{{
     {
         $xml = '<attendee>';
         $xml .= '<role>' . $this->esc($attendee->getRole()) . '</role>';
@@ -26,18 +26,18 @@ class Webex_XmlSerializer
         $xml .= $this->serializePerson($attendee);
         $xml .= '</attendee>';
         return $xml;
-    }
+    } // }}}
 
-    public function serializePerson(Webex_Model_Person $person)
+    public function serializePerson(Webex_Model_Person $person) // {{{
     {
         $xml = '<person>';
         $xml .= '<name>' . $this->esc($person->getName()) . '</name>';
         $xml .= '<email>' . $this->esc($person->getEmail()) . '</email>';
         $xml .= '</person>';
         return $xml;
-    }
+    } // }}}
 
-    public function serializeMeeting(Webex_Model_MeetingInterface $meeting, $wrap = true)
+    public function serializeMeeting(Webex_Model_MeetingInterface $meeting, $wrap = true) // {{{
     {
         $xml = '';
 
@@ -80,45 +80,33 @@ class Webex_XmlSerializer
         }
 
         return $xml;
-    }
+    } // }}}
 
     /**
      * @param  string $xml
      * @return Webex_Model_Meeting
      * @throws Exception
      */
-    public function unserializeMeeting($xml)
+    public function unserializeMeeting($xmlstr)
     {
-        // SimpleXML can't handle namespaced root element
-        $pos = strpos($xml, '?>');
-        if ($pos !== false) {
-            $xml = substr($xml, 0, $pos + 2) . '<xml>' . substr($xml, $pos + 2) . '</xml>';
-        } else {
-            $xml = '<xml>' . $xml . '</xml>';
+        $xml = new Webex_XmlReader();
+        if (!$xml->xml($xmlstr)) {
+            throw new InvalidArgumentException('Invalid XML supplied');
         }
 
-        $doc = new SimpleXMLElement($xml);
-        $namespaces = $doc->getNamespaces(true);
-
-
         $data = array();
-
-        $elems = array($doc->xml);
-        print_r($elems);
 
         $date = null;
         $timezone = null;
         $attendees = array();
 
-        while (($elem = array_shift($elems)) !== false) {
-            print_r($elem);
-            foreach ($namespaces as $ns) {
-                foreach ($elem->children($ns) as $child) {
-                    $elems[] = $child;
-                }
+        while ($xml->read()) {
+            if ($xml->nodeType !== XMLReader::ELEMENT) {
+                continue;
             }
-            $val = (string) $elem->getValue();
-            switch ($elem->getName()) {
+
+            $val = $xml->expand()->nodeValue;
+            switch ($xml->name) {
                 case 'meet:meetingkey':
                     $data['id'] = $val;
                     break;
@@ -172,7 +160,31 @@ class Webex_XmlSerializer
                     break;
 
                 case 'meet:attendee':
-                    // $attendees[] = $elem;
+                    $depth = $xml->depth;
+                    $adata = array();
+                    $subtree = $xml->getSubtree();
+                    while ($next = $subtree->read()) {
+                        // echo $subtree->name, '@', $subtree->depth, ' t:', $subtree->nodeType, "\n";
+
+                        if ($subtree->nodeType !== XMLReader::ELEMENT) {
+                            continue;
+                        }
+
+                        switch ($subtree->name) {
+                            case 'com:name':
+                                $adata['name'] = $subtree->readString();
+                                break;
+
+                            case 'com:email':
+                                $adata['email'] = $subtree->readString();
+                                break;
+
+                            case 'att:role':
+                                $adata['role'] = $subtree->readString();
+                                break;
+                        }
+                    }
+                    $attendees[] = $adata;
                     break;
             }
         }
@@ -184,14 +196,7 @@ class Webex_XmlSerializer
             $data['startDate'] = new DateTime($date, $timezone);
         }
 
-        echo 'data:';
-        print_r($data);
-        exit;
-    }
-
-    public function elemValue($xpath, $context)
-    {
-        $res = $context->xpath($xpath);
-        return (string) $res[0];
+        $data['attendees'] = $attendees;
+        return $data;
     }
 }
