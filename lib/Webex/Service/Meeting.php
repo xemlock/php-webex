@@ -42,31 +42,37 @@ class Webex_Service_Meeting
      * Save meeting to WebEx meeting service.
      *
      * @param  Webex_Model_Meeting $meeting
+     * @param  bool $refresh OPTIONAL
      * @return Webex_Model_Meeting
      * @throws Exception
      */
-    public function saveMeeting(Webex_Model_Meeting $meeting)
+    public function saveMeeting(Webex_Model_Meeting $meeting, $refresh = true)
     {
-        if ($meeting->getId()) {
-            $service = 'meeting.SetMeeting';
-            throw new Exception('Not yet implemented');
-        } else {
+        $id = $meeting->getId();
+
+        if (empty($id)) {
             $service = 'meeting.CreateMeeting';
-            $xml = $this->_serializer->serializeMeeting($meeting, false);
+        } else {
+            $service = 'meeting.SetMeeting';
+        }
 
-            $response = $this->_webex->transmit($service, $xml);
-            $responseXml = $this->_parseResponse($response);
+        $xml = $this->_serializer->serializeMeeting($meeting, false);
+        $response = $this->_webex->transmit($service, $xml);
+        $responseXml = $this->_parseResponse($response);
 
-            $results = $responseXml->xpath('//meet:meetingkey'); // not meetingKey
-            $id = (string) $results[0];
-            $data = $this->_getMeetingData($id);
-
-            if ($data) {
-                return $this->_populateMeeting($meeting, $data);
+        // for performance reasons one can disable refreshing meeting after
+        // it is persisted
+        if ($refresh) {
+            if (empty($id)) {
+                $results = $responseXml->xpath('//meet:meetingkey'); // case sensitive, not meetingKey
+                $id = (string) $results[0];
             }
 
-            throw new Exception('No meeting data received');
+            $data = $this->_getMeetingData($id);
+            $this->_populateMeeting($meeting, $data);
         }
+
+        return $meeting;
     }
 
     /**

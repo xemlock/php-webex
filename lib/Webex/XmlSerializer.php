@@ -2,6 +2,8 @@
 
 class Webex_XmlSerializer
 {
+    const DATE_FORMAT = 'm/d/Y H:i:s';
+
     public function esc($value) // {{{
     {
         return strtr((string) $value, array(
@@ -64,7 +66,7 @@ class Webex_XmlSerializer
         $startDate = $meeting->getStartDate();
 
         $xml .= '<schedule>';
-        $xml .= '<startDate>' . ($startDate ? $startDate->format('m/d/Y H:i:s') : '') . '</startDate>';
+        $xml .= '<startDate>' . ($startDate ? $startDate->format(self::DATE_FORMAT) : '') . '</startDate>';
         $xml .= '<duration>' . $this->esc($meeting->getDuration()) . '</duration>';
         $xml .= '<timeZoneID>' . ($startDate ? Webex_Util_Time::getTimeZoneID($startDate) : '') . '</timeZoneID>';
         $xml .= '<openTime>' . $this->esc($meeting->getOpenTime()) . '</openTime>';
@@ -273,7 +275,42 @@ class Webex_XmlSerializer
         }
         $xml .= '</order>';
 
-        // TODO dateScope
+        // <dateScope>
+        $xml .= '<dateScope>';
+
+        // ok, we have to unify dates for a single time zone (UTC)
+        $startDateMin = $query->getStartDateMin();
+        $endDateMin = $query->getEndDateMin();
+
+        if ($startDateMin || $endDateMin) {
+            $tz = Webex_Util_Time::toTimeZone('UTC');
+            $xml .= '<timeZoneID>' . Webex_Util_Time::getTimeZoneID($tz) . '</timeZoneID>';
+        }
+
+        if ($startDateMin) {
+            $dt = new DateTime('@' . $startDateMin->getTimestamp(), $tz);
+            $xml .= '<startDateStart>' . $dt->format(self::DATE_FORMAT) . '</startDateStart>';
+
+            $startDateMax = $query->getStartDateMax();
+            if ($startDateMax) {
+                $dt = new DateTime('@' . $startDateMax->getTimestamp(), $tz);
+                $xml .= '<startDateEnd>' . $dt->format(self::DATE_FORMAT) . '</startDateEnd>';
+            }
+        }
+
+        if ($endDateMin) {
+            $dt = new DateTime('@' . $endDateMin->getTimestamp(), $tz);
+            $xml .= '<endDateStart>' . $dt->format(self::DATE_FORMAT) . '</endDateStart>';
+
+            $endDateMax = $query->getEndDateMax();
+            if ($endDateMax) {
+                $dt = new DateTime('@' . $endDateMax->getTimestamp(), $tz);
+                $xml .= '<endDateEnd>' . $dt->format(self::DATE_FORMAT) . '</endDateEnd>';
+            }
+        }
+
+        $xml .= '</dateScope>';
+        // </dateScope>
 
         // if empty hostWebExID element is supplied currently logged user
         // is assumed. To overcome this place hostWebExID element only if

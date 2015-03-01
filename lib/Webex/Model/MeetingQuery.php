@@ -1,59 +1,7 @@
 <?php
 
-class Webex_Model_MeetingQuery
+class Webex_Model_MeetingQuery extends Webex_Model_Query
 {
-    const ORDER_ASC  = 'ASC';
-    const ORDER_DESC = 'DESC';
-
-    public function __construct(array $data = null)
-    {
-        if ($data) {
-            $this->setFromArray($data);
-        }
-    }
-
-    public function setFromArray(array $data)
-    {
-        foreach ($data as $key => $value) {
-            $method = 'set' . $key;
-            if (is_callable(array($this, $method))) {
-                $this->{$method}($value);
-            }
-        }
-        return $this;
-    }
-
-    public function setOffset($offset)
-    {
-        $this->_offset = (int) $offset;
-        return $this;
-    }
-
-    public function getOffset()
-    {
-        return $this->_offset;
-    }
-
-    // offset from where the retrieval start
-    protected $_offset = 0;
-
-    public function setLimit($limit)
-    {
-        $this->_limit = (int) $limit;
-        return $this;
-    }
-
-    public function getLimit()
-    {
-        return $this->_limit;
-    }
-
-    // max number of results to be retrieved
-    protected $_limit = 0;
-
-    // COLUMN => ASC/DESC
-    protected $_orderBy;
-
     // specific to meeting listing, timezone will be unified
     // during search all dates will be converted to GTM+00:00 timezone
     // <dateScope>
@@ -68,76 +16,115 @@ class Webex_Model_MeetingQuery
     // endDate BETWEEN endDateMin AND endDateMax
     // </dateScope>
 
-    // <meetingKey>
-    // search for this meetingKey only??? TODO check what it does
-    protected $_meetingKey;
-    // </meetingKey>
-
     // <hostWebExID>
     // The WebEx ID of the host user
     protected $_hostUsername;
     // </hostWebExID>
 
-    public function setOrderBy(array $order)
-    {
-        $newOrder = array();
-        foreach ($order as $key => $value) {
-            $newOrder[$key] = (string) $value;
-        }
-        $this->_orderBy = $newOrder;
-        return $this;
-    }
+    // <meetingKey>
+    // search for this meetingKey only??? TODO check what it does
+    protected $_meetingKey;
+    // </meetingKey>
 
-    public function getOrderBy()
-    {
-        return (array) $this->_orderBy;
-    }
-
+    /**
+     * Proxy to {@link setStartDateMin()}.
+     *
+     * {@inheritDoc}
+     */
     public function setStartDate($startDate)
     {
-        $startDate = Webex_Util_Time::toDateTime($startDate);
-        $this->setStartDateMin($startDate);
-        $this->setStartDateMax($startDate);
-        return $this;
+        return $this->setStartDateMin($startDate);
     }
 
+    /**
+     * @return DateTime|null
+     */
+    public function getStartDateMin()
+    {
+        return $this->_startDateMin;
+    }
+
+    /**
+     * @param  int|string|DateTime $startDate
+     */
     public function setStartDateMin($startDateMin)
     {
         $this->_startDateMin = Webex_Util_Time::toDateTime($startDateMin);
         return $this;
     }
 
+    /**
+     * @return DateTime|null
+     */
+    public function getStartDateMax()
+    {
+        return $this->_startDateMax;
+    }
+
+    /**
+     * @param  int|string|DateTime $startDate
+     */
     public function setStartDateMax($startDateMax)
     {
         $this->_startDateMax = Webex_Util_Time::toDateTime($startDateMax);
         return $this;
     }
 
-    public function setEndDate($endDate)
+    /**
+     * Proxy to {@link setEndDateMin()}.
+     *
+     * @param  int|string|DateTime $date
+     */
+    public function setEndDate($date)
     {
-        $endDate = Webex_Util_Time::toDateTime($endDate);
-        $this->setEndDateMin($endDate);
-        $this->setEndDateMax($endDate);
+        return $this->setEndDateMin($date);
+    }
+
+    /**
+     * @param  int|string|DateTime $date
+     */
+    public function setEndDateMin($date)
+    {
+        $this->_endDateMin = Webex_Util_Time::toDateTime($date);
         return $this;
     }
 
-    public function setEndDateMin($endDateMin)
+    /**
+     * @return DateTime|null
+     */
+    public function getEndDateMin()
     {
-        $this->_endDateMin = Webex_Util_Time::toDateTime($endDateMin);
+        return $this->_endDateMin;
+    }
+
+    /**
+     * @return DateTime|null
+     */
+    public function getEndDateMax()
+    {
+        return $this->_endDateMax;
+    }
+
+    /**
+     * @param  int|string|DateTime $date
+     */
+    public function setEndDateMax($date)
+    {
+        $this->_endDateMax = Webex_Util_Time::toDateTime($date);
         return $this;
     }
 
-    public function setEndDateMax($endDateMax)
-    {
-        $this->_endDateMax = Webex_Util_Time::toDateTime($endDateMax);
-        return $this;
-    }
-
+    /**
+     * @return string
+     */
     public function getHostUsername()
     {
         return $this->_hostUsername;
     }
 
+    /**
+     * @param  string $hostUsername
+     */
     public function setHostUsername($hostUsername)
     {
         $this->_hostUsername = (string) $hostUsername;
