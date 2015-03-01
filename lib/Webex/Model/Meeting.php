@@ -8,11 +8,6 @@ class Webex_Model_Meeting extends Webex_Model_MeetingSummary
     protected $_password;
 
     /**
-     * @var bool
-     */
-    protected $_isPublic = false;
-
-    /**
      * Determines whether or not attendees are allowed to join the
      * teleconference before the host.
      * @var bool
@@ -48,7 +43,7 @@ class Webex_Model_Meeting extends Webex_Model_MeetingSummary
     protected $_maxUsers = 4;
 
     /**
-     * @var Webex_Model_Collection<Webex_Model_Attendee>
+     * @var Webex_Collection_Collection<Webex_Model_Attendee>
      */
     protected $_attendees;
 
@@ -73,23 +68,6 @@ class Webex_Model_Meeting extends Webex_Model_MeetingSummary
     public function setPassword($password)
     {
         $this->_password = (string) $password;
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isPublic()
-    {
-        return $this->_isPublic;
-    }
-
-    /**
-     * @param  bool $flag
-     */
-    public function setPublic($flag)
-    {
-        $this->_isPublic = (bool) $flag;
         return $this;
     }
 
@@ -144,22 +122,34 @@ class Webex_Model_Meeting extends Webex_Model_MeetingSummary
         return $this;
     }
 
+    /**
+     * @return int
+     */
     public function getOpenTime()
     {
         return $this->_openTime;
     }
 
+    /**
+     * @param  int $openTime
+     */
     public function setOpenTime($openTime)
     {
         $this->_openTime = (int) $openTime;
         return $this;
     }
 
+    /**
+     * @return bool
+     */
     public function getEmailInvitations()
     {
         return $this->_emailInvitations;
     }
 
+    /**
+     * @param  bool $flag
+     */
     public function setEmailInvitations($flag)
     {
         $this->_emailInvitations = (bool) $flag;
@@ -167,12 +157,12 @@ class Webex_Model_Meeting extends Webex_Model_MeetingSummary
     }
 
     /**
-     * @return Webex_Model_Collection<Webex_Model_Attendee>
+     * @return Webex_Collection_Collection<Webex_Model_Attendee>
      */
     public function getAttendees()
     {
         if ($this->_attendees === null) {
-            $this->_attendees = new Webex_Model_Collection('Webex_Model_Attendee');
+            $this->_attendees = new Webex_Collection_Collection('Webex_Model_Attendee');
         }
         return $this->_attendees;
     }

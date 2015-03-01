@@ -9,6 +9,11 @@ class Webex_Client
     protected $partnerID;
 
     /**
+     * @var array
+     */
+    protected $_services;
+
+    /**
      * @param  $webExID   A WebEx-maintained reference to the WebEx user ID for the meeting host
      * @param  $password  The password for the user with a webExID
      * @param  $siteID    The WebEx-assigned identification number that uniquely identifies your website
@@ -72,11 +77,11 @@ class Webex_Client
     {
         $serviceName = ucfirst($serviceName);
 
-        require_once dirname(__FILE__) . '/Service/' . $serviceName . '.php';
+        if (empty($this->_services[$serviceName])) {
+            $className = 'Webex_Service_' . $serviceName;
+            $this->_services[$serviceName] = new $className($this);
+        }
 
-        $prefix = substr(__CLASS__, 0, strrpos(__CLASS__, '_'));
-        $className = 'Webex_Service_' . $serviceName;
-
-        return new $className($this);
+        return $this->_services[$serviceName];
     }
 }

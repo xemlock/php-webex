@@ -88,29 +88,23 @@ class Webex_XmlSerializer
     } // }}}
 
     /**
-     * @param  string $xml
-     * @return Webex_Model_Meeting
-     * @throws Exception
+     * @param XMLReader $xml
      */
-    public function unserializeMeeting($xmlstr)
+    protected function _unserializeMeetingXml($xml)
     {
-        $xml = new Webex_XmlReader();
-        if (!$xml->xml($xmlstr)) {
-            throw new InvalidArgumentException('Invalid XML supplied');
-        }
-
         $data = array();
 
         $date = null;
         $timezone = null;
         $attendees = array();
 
-        while ($xml->read()) {
+        do {
             if ($xml->nodeType !== XMLReader::ELEMENT) {
+                // if reading has not yet started nodeType === XMLReader::NONE
                 continue;
             }
 
-            $val = $xml->expand()->nodeValue;
+            $val = $xml->readString();
             switch ($xml->name) {
                 case 'meet:meetingkey':
                     $data['id'] = $val;
@@ -125,6 +119,11 @@ class Webex_XmlSerializer
                     $data['password'] = $val;
                     break;
                 // </meet:accessControl>
+
+                // this is used only in message.LstsummaryMeeting response
+                case 'meet:listStatus':
+                    $data['isPublic'] = ($val === 'PUBLIC');
+                    break;
 
                 // <meet:metaData>
                 case 'meet:confName':
@@ -158,6 +157,12 @@ class Webex_XmlSerializer
                 case 'meet:joinTeleconfBeforeHost':
                     $data['joinBeforeHost'] = $val === 'true' ? true : false;
                     break;
+
+                case 'meet:hostWebExID':
+                    // this element occures in meeting.LstsummaryMeeting response
+                    // as a direct meet:meeting element
+                    $data['hostUsername'] = $val;
+                    break;
                 // </meet:schedule>
 
                 case 'meet:maxUserNumber':
@@ -168,7 +173,7 @@ class Webex_XmlSerializer
                     $depth = $xml->depth;
                     $adata = array();
                     $subtree = $xml->getSubtree();
-                    while ($next = $subtree->read()) {
+                    while ($subtree->read()) {
                         // echo $subtree->name, '@', $subtree->depth, ' t:', $subtree->nodeType, "\n";
 
                         if ($subtree->nodeType !== XMLReader::ELEMENT) {
@@ -192,7 +197,7 @@ class Webex_XmlSerializer
                     $attendees[] = $adata;
                     break;
             }
-        }
+        } while ($xml->read());
 
         if ($timezone) {
             $timezone = Webex_Util_Time::toTimeZone($timezone);
@@ -202,6 +207,126 @@ class Webex_XmlSerializer
         }
 
         $data['attendees'] = $attendees;
+        return $data;
+    }
+
+    /**
+     * @param  string $xml
+     * @return array
+     * @throws Exception
+     */
+    public function unserializeMeeting($xmlstr)
+    {
+        $xml = new Webex_XmlReader();
+        if (!$xml->xml($xmlstr)) {
+            throw new InvalidArgumentException('Invalid XML supplied');
+        }
+
+        return $this->_unserializeMeetingXml($xml);
+    }
+
+    public function serializeMeetingQuery(Webex_Model_MeetingQuery $query)
+    {
+        $xml = '';
+
+        $xml .= '<listControl>';
+
+        $offset = (int) $query->getOffset();
+        if ($offset >= 0) {
+            $xml .= '<startFrom>' . $offset . '</startFrom>';
+        }
+
+        $limit = (int) $query->getLimit();
+        if ($limit > 0) {
+            $xml .= '<maximumNum>' . $limit . '</maximumNum>';
+        }
+
+        $xml .= '<listMethod>AND</listMethod>';
+        $xml .= '</listControl>';
+
+        $xml .= '<order>';
+        foreach ($query->getOrderBy() as $key => $value) {
+            switch (strtolower($key)) {
+                case 'hostusername':
+                    $key = 'HOSTWEBEXID';
+                    break;
+
+                case 'name':
+                    $key = 'CONFNAME';
+                    break;
+
+                case 'startdate':
+                    $key = 'STARTTIME';
+                    break;
+            }
+            switch (strtolower($value)) {
+                case 'desc':
+                    $value = 'DESC';
+                    break;
+
+                default:
+                    $value = 'ASC';
+                    break;
+            }
+            $xml .= '<orderBy>' . $this->esc($key) . '</orderBy>';
+            $xml .= '<orderAD>' . $this->esc($value) . '</orderAD>';
+        }
+        $xml .= '</order>';
+
+        // TODO dateScope
+
+        // if empty hostWebExID element is supplied currently logged user
+        // is assumed. To overcome this place hostWebExID element only if
+        // a non-empty host username is provided.
+        $hostUsername = $query->getHostUsername();
+        if (strlen($hostUsername)) {
+            $xml .= '<hostWebExID>' . $this->esc($hostUsername) . '</hostWebExID>';
+        }
+
+        echo "\n\n", __FUNCTION__, ': ', $xml, "\n\n";
+
+        return $xml;
+    }
+
+    /**
+     * @return array
+     * @throws Exception
+     */
+    public function unserializeMeetingSummaries($response)
+    {
+        $xmlReader = new Webex_XmlReader();
+        $xmlReader->xml($response);
+
+        $meta = array();
+        $data = array(
+            'total'  => 0,
+            'offset' => 0,
+            'items'  => array(),
+        );
+        while ($xmlReader->read()) {
+            if ($xmlReader->nodeType !== XMLReader::ELEMENT) {
+                continue;
+            }
+            switch ($xmlReader->name) {
+                case 'serv:total':
+                    $data['total'] = $xmlReader->readString();
+                    break;
+
+                case 'serv:returned':
+                    $data['returned'] = $xmlReader->readString();
+                    break;
+
+                case 'serv:startFrom':
+                    $data['offset'] = $xmlReader->readString();
+                    break;
+
+                case 'meet:meeting':
+                    $subtreeReader = $xmlReader->getSubtree();
+                    $data['items'][] = $this->_unserializeMeetingXml($subtreeReader);
+                    break;
+            }
+        }
+
         return $data;
     }
 }

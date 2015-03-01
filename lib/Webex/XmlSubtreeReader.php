@@ -56,4 +56,14 @@ class Webex_XmlSubtreeReader
     {
         return $this->_xmlReader->{$property};
     }
+
+    /**
+     * @return Webex_XmlSubtreeReader
+     * @throws Exception
+     */
+    public function getSubtree()
+    {
+        $class = get_class($this);
+        return new $class($this->_xmlReader);
+    }
 }

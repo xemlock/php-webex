@@ -55,22 +55,17 @@ class Webex_Service_Meeting
             $xml = $this->_serializer->serializeMeeting($meeting, false);
 
             $response = $this->_webex->transmit($service, $xml);
-            $xml = new SimpleXMLElement($response);
+            $responseXml = $this->_parseResponse($response);
 
-            $nodes = $xml->xpath('//serv:response/serv:result');
-            $result = (string) $nodes[0];
+            $results = $responseXml->xpath('//meet:meetingkey'); // not meetingKey
+            $id = (string) $results[0];
+            $data = $this->_getMeetingData($id);
 
-            if ($result === 'SUCCESS') {
-                $results = $xml->xpath('//meet:meetingkey'); // not meetingKey
-                $id = (string) $results[0];
-                $data = $this->_getMeetingData($id);
-                if ($data) {
-                    return $this->_populateMeeting($meeting, $data);
-                }
+            if ($data) {
+                return $this->_populateMeeting($meeting, $data);
             }
 
-            $nodes = $xml->xpath('//serv:response/serv:reason');
-            throw new Exception((string) $nodes[0]);
+            throw new Exception('No meeting data received');
         }
     }
 
@@ -93,17 +88,8 @@ class Webex_Service_Meeting
         $service = 'meeting.DelMeeting';
         $xml = '<meetingKey>' . $this->_serializer->esc($id) . '</meetingKey>';
         $response = $this->_webex->transmit($service, $xml);
-        print_r($response);
 
-        $xml = new SimpleXMLElement($response);
-
-        $nodes = $xml->xpath('//serv:response/serv:result');
-        $result = (string) $nodes[0];
-
-        if ($result !== 'SUCCESS') {
-            $nodes = $xml->xpath('//serv:response/serv:reason');
-            throw new Exception((string) $nodes[0]);
-        }
+        $this->_parseResponse($response);
 
         if ($meeting) {
             $meeting->setId(null);
@@ -116,6 +102,7 @@ class Webex_Service_Meeting
             'meeting.GetMeeting',
             '<meetingKey>' . $this->_serializer->esc($id) . '</meetingKey>'
         );
+        $this->_parseResponse($response);
         return $this->_serializer->unserializeMeeting($response);
     }
 
@@ -129,5 +116,48 @@ class Webex_Service_Meeting
             }
         }
         return $meeting;
+    }
+
+    public function getMeetingSummaries(Webex_Model_MeetingQuery $query = null)
+    {
+        $response = $this->_webex->transmit(
+            'meeting.LstsummaryMeeting',
+            $query ? $this->_serializer->serializeMeetingQuery($query) : ''
+        );
+        $this->_parseResponse($response);
+
+        $data = $this->_serializer->unserializeMeetingSummaries($response);
+
+        $results = new Webex_Collection_ResultCollection('Webex_Model_MeetingSummary');
+        $results->setTotal($data['total']);
+        $results->setOffset($data['offset']);
+        foreach ($data['items'] as $item) {
+            $results->add(new Webex_Model_MeetingSummary($item));
+        }
+
+        return $results;
+    }
+
+    /**
+     * @param  string $response
+     * @return SimpleXMLElement
+     */
+    protected function _parseResponse($response)
+    {
+        try {
+            $xmlResponse = new SimpleXMLElement($response);
+        } catch (Exception $e) {
+            throw new Exception('Response is not a valid XML document');
+        }
+
+        $nodes = $xmlResponse->xpath('//serv:response/serv:result');
+        $result = (string) $nodes[0];
+
+        if ($result !== 'SUCCESS') {
+            $nodes = $xmlResponse->xpath('//serv:response/serv:reason');
+            throw new Exception((string) $nodes[0]);
+        }
+
+        return $xmlResponse;
     }
 }
