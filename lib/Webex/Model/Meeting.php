@@ -3,6 +3,7 @@
 class Webex_Model_Meeting extends Webex_Model_MeetingSummary
 {
     /**
+     * The password for the meeting, maximum of 16 characters.
      * @var string
      */
     protected $_password;
