@@ -49,8 +49,6 @@ class Webex_Client
         $xml .= '</body>';
         $xml .= '</serv:message>';
 
-        echo $xml, "\n";
-
         // Send request
         $url = sprintf('%s.webex.com/WBXService/XMLService', $this->siteName);
         $headers = array(

@@ -1,6 +1,6 @@
 <?php
 
-class Webex_XmlSubtreeReader
+class Webex_XmlSubtreeReader implements Webex_XmlReaderInterface
 {
     protected $_xmlReader;
     protected $_startDepth;

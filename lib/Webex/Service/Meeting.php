@@ -1,27 +1,10 @@
 <?php
 
-class Webex_Service_Meeting
+/**
+ * Meeting service acts as a repository for Meetings.
+ */
+class Webex_Service_Meeting extends Webex_Service_Abstract
 {
-    /**
-     * @var Webex_Client
-     */
-    protected $_webex;
-
-    /**
-     * @var Webex_XmlSerializer
-     */
-    protected $_serializer;
-
-    /**
-     * @param  Webex_Client $webex
-     * @return void
-     */
-    public function __construct(Webex_Client $webex)
-    {
-        $this->_webex = $webex;
-        $this->_serializer = new Webex_XmlSerializer();
-    }
-
     /**
      * Retrieve meeting from WebEx meeting service.
      *
@@ -43,7 +26,7 @@ class Webex_Service_Meeting
      *
      * @param  Webex_Model_Meeting $meeting
      * @param  bool $refresh OPTIONAL
-     * @return Webex_Model_Meeting
+     * @return void
      * @throws Exception
      */
     public function saveMeeting(Webex_Model_Meeting $meeting, $refresh = true)
@@ -71,15 +54,13 @@ class Webex_Service_Meeting
             $data = $this->_getMeetingData($id);
             $this->_populateMeeting($meeting, $data);
         }
-
-        return $meeting;
     }
 
     /**
      * Delete meeting from WebEx meeting service.
      *
      * @param  Webex_Service_Meeting|int $meeting
-     * @return Webex_Service_Meeting
+     * @return void
      * @throws Exception
      */
     public function deleteMeeting($meeting)
@@ -102,6 +83,10 @@ class Webex_Service_Meeting
         }
     }
 
+    /**
+     * @param  string $id
+     * @return array
+     */
     protected function _getMeetingData($id)
     {
         $response = $this->_webex->transmit(
@@ -112,6 +97,11 @@ class Webex_Service_Meeting
         return $this->_serializer->unserializeMeeting($response);
     }
 
+    /**
+     * @param  Webex_Model_Meeting $meeting
+     * @param  array $data
+     * @return Webex_Model_Meeting
+     */
     protected function _populateMeeting(Webex_Model_Meeting $meeting, array $data)
     {
         $meeting->setFromArray($data);
@@ -124,6 +114,10 @@ class Webex_Service_Meeting
         return $meeting;
     }
 
+    /**
+     * @param  Webex_Model_MeetingQuery|null $query OPTIONAL
+     * @return Webex_Collection_ResultCollection<Webex_Model_MeetingSummary>
+     */
     public function getMeetingSummaries(Webex_Model_MeetingQuery $query = null)
     {
         $response = $this->_webex->transmit(
@@ -142,28 +136,5 @@ class Webex_Service_Meeting
         }
 
         return $results;
-    }
-
-    /**
-     * @param  string $response
-     * @return SimpleXMLElement
-     */
-    protected function _parseResponse($response)
-    {
-        try {
-            $xmlResponse = new SimpleXMLElement($response);
-        } catch (Exception $e) {
-            throw new Exception('Response is not a valid XML document');
-        }
-
-        $nodes = $xmlResponse->xpath('//serv:response/serv:result');
-        $result = (string) $nodes[0];
-
-        if ($result !== 'SUCCESS') {
-            $nodes = $xmlResponse->xpath('//serv:response/serv:reason');
-            throw new Exception((string) $nodes[0]);
-        }
-
-        return $xmlResponse;
     }
 }

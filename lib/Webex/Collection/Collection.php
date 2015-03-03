@@ -1,6 +1,6 @@
 <?php
 
-class Webex_Collection_Collection implements Countable, IteratorAggregate
+class Webex_Collection_Collection implements Countable, ArrayAccess, IteratorAggregate
 {
     /**
      * @var string|null
@@ -101,6 +101,16 @@ class Webex_Collection_Collection implements Countable, IteratorAggregate
     }
 
     /**
+     * Get array containing all items.
+     *
+     * @return array
+     */
+    public function getItems()
+    {
+        return $this->_items;
+    }
+
+    /**
      * @param  string $value
      * @return void
      * @throws InvalidArgumentException
@@ -116,5 +126,45 @@ class Webex_Collection_Collection implements Countable, IteratorAggregate
             ));
         }
         return $item;
+    }
+
+    public function offsetGet($key)
+    {
+        return isset($this->_items[$key]) ? $this->_items[$key] : null;
+    }
+
+    /**
+     * @param  int $key
+     * @param  mixed $value
+     * @return void
+     * @throws RangeException
+     * @throws InvalidArgumentException
+     */
+    public function offsetSet($key, $value)
+    {
+        if ($key === null) {
+            // [] notation
+            return $this->add($value);
+        }
+
+        $key = (int) $key;
+
+        // must be within current range
+        if ($key < 0 || count($this->_item) <= $key) {
+            throw new RangeException('Invalid offset provided');
+        }
+
+        $this->_checkItemType($value);
+        $this->_items[$key] = $value;
+    }
+
+    public function offsetExists($key)
+    {
+        return isset($this->_items[$key]);
+    }
+
+    public function offsetUnset($key)
+    {
+        $this->delete($key);
     }
 }

@@ -35,6 +35,13 @@ class Webex_XmlSerializer
         $xml = '<person>';
         $xml .= '<name>' . $this->esc($person->getName()) . '</name>';
         $xml .= '<email>' . $this->esc($person->getEmail()) . '</email>';
+
+        /*
+        $username = $person->getUsername();
+        if (strlen($username)) {
+            $xml .= '<webExID>' . $this->esc($username) . '</webExID>';
+        }*/
+
         $xml .= '</person>';
         return $xml;
     } // }}}
@@ -108,7 +115,8 @@ class Webex_XmlSerializer
 
             $val = $xml->readString();
             switch ($xml->name) {
-                case 'meet:meetingkey':
+                case 'meet:meetingkey': // meetings.CreateMeeting
+                case 'meet:meetingKey': // meetings.LstsummaryMeeting
                     $data['id'] = $val;
                     break;
 
@@ -176,8 +184,6 @@ class Webex_XmlSerializer
                     $adata = array();
                     $subtree = $xml->getSubtree();
                     while ($subtree->read()) {
-                        // echo $subtree->name, '@', $subtree->depth, ' t:', $subtree->nodeType, "\n";
-
                         if ($subtree->nodeType !== XMLReader::ELEMENT) {
                             continue;
                         }
@@ -227,10 +233,10 @@ class Webex_XmlSerializer
         return $this->_unserializeMeetingXml($xml);
     }
 
-    public function serializeMeetingQuery(Webex_Model_MeetingQuery $query)
+    public function serializeQuery(Webex_Model_Query $query, array $orderMapping = null)
     {
         $xml = '';
-
+        // serialize common parts of query
         $xml .= '<listControl>';
 
         $offset = (int) $query->getOffset();
@@ -248,19 +254,10 @@ class Webex_XmlSerializer
 
         $xml .= '<order>';
         foreach ($query->getOrderBy() as $key => $value) {
-            switch (strtolower($key)) {
-                case 'hostusername':
-                    $key = 'HOSTWEBEXID';
-                    break;
-
-                case 'name':
-                    $key = 'CONFNAME';
-                    break;
-
-                case 'startdate':
-                    $key = 'STARTTIME';
-                    break;
+            if (isset($orderMapping[$key])) {
+                $key = $orderMapping[$key];
             }
+            $key = strtoupper($key);
             switch (strtolower($value)) {
                 case 'desc':
                     $value = 'DESC';
@@ -274,6 +271,17 @@ class Webex_XmlSerializer
             $xml .= '<orderAD>' . $this->esc($value) . '</orderAD>';
         }
         $xml .= '</order>';
+
+        return $xml;
+    }
+
+    public function serializeMeetingQuery(Webex_Model_MeetingQuery $query)
+    {
+        $xml = $this->serializeQuery($query, array(
+            'name' => 'CONFNAME',
+            'startDate' => 'STARTTIME',
+            'hostUsername' => 'HOSTWEBEXID',
+        ));
 
         // <dateScope>
         $xml .= '<dateScope>';
@@ -320,8 +328,6 @@ class Webex_XmlSerializer
             $xml .= '<hostWebExID>' . $this->esc($hostUsername) . '</hostWebExID>';
         }
 
-        echo "\n\n", __FUNCTION__, ': ', $xml, "\n\n";
-
         return $xml;
     }
 
@@ -346,15 +352,15 @@ class Webex_XmlSerializer
             }
             switch ($xmlReader->name) {
                 case 'serv:total':
-                    $data['total'] = $xmlReader->readString();
+                    $data['total'] = (int) $xmlReader->readString();
                     break;
 
                 case 'serv:returned':
-                    $data['returned'] = $xmlReader->readString();
+                    $data['returned'] = (int) $xmlReader->readString();
                     break;
 
                 case 'serv:startFrom':
-                    $data['offset'] = $xmlReader->readString();
+                    $data['offset'] = (int) $xmlReader->readString();
                     break;
 
                 case 'meet:meeting':
@@ -364,6 +370,104 @@ class Webex_XmlSerializer
             }
         }
 
+        return $data;
+    }
+
+    // so far only basic querying support is provided, only search
+    // by username and email
+    public function serializeUserQuery(Webex_Model_UserQuery $query)
+    {
+        $xml = $this->serializeQuery($query, array(
+            // 'UID' => ?, valid column values are undocumented in XML API Reference
+        ));
+
+        $username = $query->getUsername();
+        if (strlen($username)) {
+            // yep, not webExID but webExId
+            $xml .= '<webExId>' . $this->esc($username) . '</webExId>';
+        }
+
+        $email = $query->getEmail();
+        if (strlen($email)) {
+            $xml .= '<email>' . $this->esc($email) . '</email>';
+        }
+
+        return $xml;
+    }
+
+    public function unserializeUserSummaries($response)
+    {
+        $xmlReader = new Webex_XmlReader();
+        $xmlReader->xml($response);
+
+        $meta = array();
+        $data = array(
+            'total'  => 0,
+            'offset' => 0,
+            'items'  => array(),
+        );
+        while ($xmlReader->read()) {
+            if ($xmlReader->nodeType !== XMLReader::ELEMENT) {
+                continue;
+            }
+            switch ($xmlReader->name) {
+                case 'serv:total':
+                    $data['total'] = (int) $xmlReader->readString();
+                    break;
+
+                case 'serv:returned':
+                    $data['returned'] = (int) $xmlReader->readString();
+                    break;
+
+                case 'serv:startFrom':
+                    $data['offset'] = (int) $xmlReader->readString();
+                    break;
+
+                case 'use:user':
+                    $subtreeReader = $xmlReader->getSubtree();
+                    $data['items'][] = $this->_unserializeUserXml($subtreeReader);
+                    break;
+            }
+        }
+
+        return $data;
+    }
+
+    public function _unserializeUserXml(Webex_XmlReaderInterface $xmlReader)
+    {
+        $data = array();
+        do {
+            if ($xmlReader->nodeType !== XMLReader::ELEMENT) {
+                continue;
+            }
+
+            switch ($xmlReader->name) {
+                case 'use:webExId':
+                    $data['username'] = $xmlReader->readString();
+                    break;
+
+                case 'use:email':
+                    $data['email'] = $xmlReader->readString();
+                    break;
+
+                case 'use:registrationDate':
+                    $data['regDate'] = $xmlReader->readString();
+                    break;
+
+                case 'use:active':
+                    $data['active'] = $xmlReader->readString();
+                    break;
+
+                case 'use:firstName':
+                    $data['firstName'] = $xmlReader->readString();
+                    break;
+
+                case 'use:lastName':
+                    $data['lastName'] = $xmlReader->readString();
+                    break;
+            }
+        
+        } while ($xmlReader->read());
         return $data;
     }
 }

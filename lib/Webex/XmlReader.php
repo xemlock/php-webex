@@ -1,6 +1,6 @@
 <?php
 
-class Webex_XmlReader extends XMLReader
+class Webex_XmlReader extends XMLReader implements Webex_XmlReaderInterface
 {
     /**
      * @return Webex_XmlSubtreeReader

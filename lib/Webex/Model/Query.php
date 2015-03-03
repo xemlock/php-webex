@@ -25,6 +25,8 @@ class Webex_Model_Query
      */
     protected $_orderBy;
 
+    protected $_match;
+
     /**
      * Constructor.
      *
@@ -98,13 +100,18 @@ class Webex_Model_Query
     }
 
     /**
-     * @param  array $order
+     * @param  array|string $order
+     * @return Webex_Model_Query
      */
-    public function setOrderBy(array $order)
+    public function setOrderBy($order)
     {
         $newOrder = array();
-        foreach ($order as $key => $value) {
-            $newOrder[$key] = (string) $value;
+        if (is_array($order)) {
+            foreach ($order as $key => $value) {
+                $newOrder[$key] = (string) $value;
+            }
+        } else {
+            $newOrder[(string) $order] = self::ORDER_ASC;
         }
         $this->_orderBy = $newOrder;
         return $this;
