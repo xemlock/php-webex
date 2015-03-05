@@ -24,24 +24,52 @@ abstract class Webex_Service_Abstract
 
     /**
      * @param  string $response
-     * @return SimpleXMLElement
      */
     protected function _parseResponse($response)
     {
-        try {
-            $xmlResponse = new SimpleXMLElement($response);
-        } catch (Exception $e) {
-            throw new Exception('Response is not a valid XML document');
+        if ($response === false) {
+            throw new Exception('Unable to connect to WebEx API endpoint');
         }
 
-        $nodes = $xmlResponse->xpath('//serv:response/serv:result');
-        $result = (string) $nodes[0];
+        $xmlReader = new Webex_XmlReader();
+        $xmlReader->xml($response);
 
-        if ($result !== 'SUCCESS') {
-            $nodes = $xmlResponse->xpath('//serv:response/serv:reason');
-            throw new Exception((string) $nodes[0]);
+        $status = array(
+            'result' => 'FAILURE',
+            'reason' => 'Improperly formatted server response',
+            'exceptionID' => 0, // according to WebEx XML API error codes, 0 indicates a server error
+        );
+
+        while (@$xmlReader->read()) {
+            if ($xmlReader->nodeType !== XMLReader::ELEMENT) {
+                continue;
+            }
+            if ($xmlReader->name === 'serv:response') {
+                $subtree = $xmlReader->getSubtree();
+                while ($subtree->read()) {
+                    if ($subtree->nodeType !== XMLReader::ELEMENT) {
+                        continue;
+                    }
+                    switch ($subtree->name) {
+                        case 'serv:result':
+                            $status['result'] = $subtree->readString();
+                            break;
+
+                        case 'serv:reason':
+                            $status['reason'] = $subtree->readString();
+                            break;
+
+                        case 'serv:exceptionID':
+                            $status['exceptionID'] = (int) $subtree->readString();
+                            break;
+                    }
+                }
+                break;
+            }
         }
 
-        return $xmlResponse;
+        if ($status['result'] !== 'SUCCESS') {
+            throw new Exception($status['reason'], $status['exceptionID']);
+        }
     }
 }

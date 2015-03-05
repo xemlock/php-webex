@@ -167,4 +167,29 @@ class Webex_Model_Meeting extends Webex_Model_MeetingSummary
         }
         return $this->_attendees;
     }
+
+    /**
+     * @param  array|Traversable $attendees
+     */
+    public function setAttendees($attendees)
+    {
+        $newAttendees = array();
+
+        foreach ($attendees as $attendee) {
+            if (!$attendee instanceof Webex_Model_Attendee) {
+                if (!is_array($attendee)) {
+                    throw new InvalidArgumentException('Attendee must be either an instance of Webex_Model_Attendee or an array');
+                }
+                $attendee = new Webex_Model_Attendee($attendee);
+            }
+            $newAttendees[] = $attendee;
+        }
+
+        $this->getAttendees()->clear();
+        foreach ($newAttendees as $attendee) {
+            $this->getAttendees()->add($attendee);
+        }
+
+        return $this;
+    }
 }
