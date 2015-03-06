@@ -2,6 +2,11 @@
 
 class Webex_XmlReader extends XMLReader implements Webex_XmlReaderInterface
 {
+    public function __destruct()
+    {
+        $this->close();
+    }
+
     /**
      * @return Webex_XmlSubtreeReader
      * @throws Exception
@@ -9,6 +14,23 @@ class Webex_XmlReader extends XMLReader implements Webex_XmlReaderInterface
     public function getSubtree()
     {
         return new Webex_XmlSubtreeReader($this);
+    }
+
+    /**
+     * @param  int $nodeType OPTIONAL
+     * @return bool
+     */
+    public function read($nodeType = null)
+    {
+        if ($nodeType === null) {
+            return parent::read();
+        }
+        while (parent::read()) {
+            if ($this->nodeType === $nodeType) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

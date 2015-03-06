@@ -2,12 +2,24 @@
 
 class Webex_XmlSubtreeReader implements Webex_XmlReaderInterface
 {
+    /**
+     * @var Webex_XmlReader
+     */
     protected $_xmlReader;
+
     protected $_startDepth;
     protected $_startName;
+
+    /**
+     * @var bool
+     */
     protected $_done;
 
-    public function __construct(XMLReader $reader)
+    /**
+     * @param  Webex_XmlReader $reader
+     * @throws Exception
+     */
+    public function __construct(Webex_XmlReader $reader)
     {
         if ($reader->nodeType !== XMLReader::ELEMENT) {
             throw new Exception('XML Reader is in invalid state');
@@ -17,28 +29,42 @@ class Webex_XmlSubtreeReader implements Webex_XmlReaderInterface
         $this->_xmlReader = $reader;
     }
 
-    public function read()
+    public function __destruct()
+    {
+        $this->_xmlReader = null;
+    }
+
+    /**
+     * @param  int $nodeType OPTIONAL
+     * @return bool
+     */
+    public function read($nodeType = null)
     {
         if ($this->_done) {
             return false;
         }
 
-        if ($this->_xmlReader->read()) {
+        while ($this->_xmlReader->read()) {
             if ($this->_xmlReader->nodeType === XMLReader::END_ELEMENT
                 && $this->_xmlReader->depth === $this->_startDepth
                 && $this->_xmlReader->name === $this->_startName
             ) {
-                // last valid element
+                // last valid element, no elements will be read in this subtree
                 $this->_done = true;
             }
-            return true;
+            if ($nodeType === null || $nodeType === $this->_xmlReader->nodeType) {
+                return true;
+            }
         }
 
-        // unable to read more from this document
+        // no more elements are left to read in this document
         $this->_done = true;
         return false;
     }
 
+    /**
+     * @return string
+     */
     public function readString()
     {
         if (is_callable(array($this->_xmlReader, 'readString'))) {
