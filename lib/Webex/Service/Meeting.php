@@ -136,7 +136,11 @@ class Webex_Service_Meeting extends Webex_Service_Abstract
             if ($e->getCode() !== 15) {
                 throw $e;
             }
-            $data['total'] = $data['offset'] = 0;
+            $data = array(
+                'total'  => 0,
+                'offset' => 0,
+                'items'  => array(),
+            );
         }
 
         $results = new Webex_Collection_ResultCollection('Webex_Model_MeetingSummary');

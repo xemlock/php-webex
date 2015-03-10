@@ -93,6 +93,19 @@ class Webex_XmlSerializer
             $xml .= '</meeting>';
         }
 
+        $xml .= '<attendeeOptions>';
+        $xml .= '<emailInvitations>' . $this->b($meeting->getEmailInvitations()) . '</emailInvitations>';
+        $xml .= '</attendeeOptions>';
+
+        //$xml .= '<enableOptions>';
+        //$xml .= '<voip>TRUE</voip>';
+        //$xml .= '</enableOptions>';
+
+        // joinHostBeforeUrl: NONE (default), OTHER, CALLIN, CALLBACK
+        //$xml .= '<telephony>';
+        //$xml .= '<telephonySupport></telephonySupport>';
+        //$xml .= '</telephony>';
+
         return $xml;
     } // }}}
 
