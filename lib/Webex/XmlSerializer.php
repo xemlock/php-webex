@@ -71,11 +71,27 @@ class Webex_XmlSerializer
         $xml .= '</metaData>';
 
         $startDate = $meeting->getStartDate();
+        $timeZoneID = null;
+
+        if ($startDate) {
+            if ($timezone = $startDate->getTimezone()) {
+                try {
+                    $timeZoneID = Webex_Util_Time::getWebexTimeZoneID($timezone);
+                } catch (Exception $e) {}
+            }
+            // unable to determine timeZoneID, convert date to UTC and get
+            // corresponding timeZoneID
+            if ($timeZoneID === null) {
+                $timezone = new DateTimeZone('UTC');
+                $startDate = new DateTime('@' . $startDate->getTimeStamp(), $timezone);
+                $timeZoneID = Webex_Util_Time::getWebexTimeZoneID($timezone);
+            }
+        }
 
         $xml .= '<schedule>';
         $xml .= '<startDate>' . ($startDate ? $startDate->format(self::DATE_FORMAT) : '') . '</startDate>';
+        $xml .= '<timeZoneID>' . $this->esc($timeZoneID) . '</timeZoneID>';
         $xml .= '<duration>' . $this->esc($meeting->getDuration()) . '</duration>';
-        $xml .= '<timeZoneID>' . ($startDate ? Webex_Util_Time::getTimeZoneID($startDate) : '') . '</timeZoneID>';
         $xml .= '<openTime>' . $this->esc($meeting->getOpenTime()) . '</openTime>';
         $xml .= '<joinTeleconfBeforeHost>' . $this->b($meeting->getJoinBeforeHost()) . '</joinTeleconfBeforeHost>';
         $xml .= '</schedule>';
@@ -117,7 +133,6 @@ class Webex_XmlSerializer
         $data = array();
 
         $date = null;
-        $timezone = null;
         $attendees = array();
 
         do {
@@ -164,9 +179,11 @@ class Webex_XmlSerializer
                     break;
 
                 case 'meet:timeZone':
-                    if (preg_match('#GMT(?P<offset>[+-]\d{2}:\d{2})#i', $val, $m)) {
-                        $timezone = $m['offset'];
-                    }
+                    $data['timeZone'] = $val;
+                    break;
+
+                case 'meet:timeZoneID':
+                    $data['timeZoneID'] = $val;
                     break;
 
                 case 'meet:duration':
@@ -220,12 +237,31 @@ class Webex_XmlSerializer
             }
         } while ($xml->read());
 
+        // try checking for timeZone first, timeZone is not provided if
+        // it is outside the XML API value (i.e. Meeting was created by
+        // web GUI)
+        $timezone = null;
+
+        if (isset($data['timeZone'])) {
+            foreach (Webex_Util_Time::getWebexTimeZones() as $tz) {
+                if ($tz['name'] == $data['timeZone'] && isset($tz['timezone'])) {
+                    $timezone = $tz['timezone'];
+                }
+            }
+        }
+        if (empty($timezone) && isset($data['timeZoneID'])) {
+            try {
+                $timezone = Webex_Util_Time::getDateTimeZoneFromTimeZoneId($data['timeZoneID']);
+            } catch (Exception $e) {}
+        }
+
         if ($timezone) {
-            $timezone = Webex_Util_Time::toTimeZone($timezone);
+            $timezone = Webex_Util_Time::toDateTimeZone($timezone);
         }
         if ($date) {
             $data['startDate'] = new DateTime($date, $timezone);
         }
+        var_dumP($data);
 
         $data['attendees'] = $attendees;
         return $data;
@@ -242,7 +278,6 @@ class Webex_XmlSerializer
         if (!$xml->xml($xmlstr)) {
             throw new InvalidArgumentException('Invalid XML supplied');
         }
-
         return $this->_unserializeMeetingXml($xml);
     }
 
@@ -307,7 +342,7 @@ class Webex_XmlSerializer
         $endDateMax = $query->getEndDateMax();
 
         if ($startDateMin || $startDateMax || $endDateMin || $endDateMax) {
-            $tz = Webex_Util_Time::toTimeZone('UTC');
+            $tz = new DateTimeZone('UTC');
             $xml .= '<timeZoneID>' . Webex_Util_Time::getTimeZoneID($tz) . '</timeZoneID>';
         }
 
