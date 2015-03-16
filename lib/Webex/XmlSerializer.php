@@ -70,27 +70,13 @@ class Webex_XmlSerializer
         $xml .= '<meetingType>' . $this->esc($meeting->getType()) . '</meetingType>';
         $xml .= '</metaData>';
 
-        $startDate = $meeting->getStartDate();
-        $timeZoneID = null;
-
-        if ($startDate) {
-            if ($timezone = $startDate->getTimezone()) {
-                try {
-                    $timeZoneID = Webex_Util_Time::getWebexTimeZoneID($timezone);
-                } catch (Exception $e) {}
-            }
-            // unable to determine timeZoneID, convert date to UTC and get
-            // corresponding timeZoneID
-            if ($timeZoneID === null) {
-                $timezone = new DateTimeZone('UTC');
-                $startDate = new DateTime('@' . $startDate->getTimeStamp(), $timezone);
-                $timeZoneID = Webex_Util_Time::getWebexTimeZoneID($timezone);
-            }
-        }
+        // date ops works in the same time zone setting, so actual timestamp
+        // is irrelevant
+        $time = strtotime($meeting->getStartDate());
 
         $xml .= '<schedule>';
-        $xml .= '<startDate>' . ($startDate ? $startDate->format(self::DATE_FORMAT) : '') . '</startDate>';
-        $xml .= '<timeZoneID>' . $this->esc($timeZoneID) . '</timeZoneID>';
+        $xml .= '<startDate>' . date(self::DATE_FORMAT, $time) . '</startDate>';
+        $xml .= '<timeZoneID>' . (int) $meeting->getTimeZoneID() . '</timeZoneID>';
         $xml .= '<duration>' . $this->esc($meeting->getDuration()) . '</duration>';
         $xml .= '<openTime>' . $this->esc($meeting->getOpenTime()) . '</openTime>';
         $xml .= '<joinTeleconfBeforeHost>' . $this->b($meeting->getJoinBeforeHost()) . '</joinTeleconfBeforeHost>';
@@ -126,7 +112,8 @@ class Webex_XmlSerializer
     } // }}}
 
     /**
-     * @param XMLReader $xml
+     * @param  XMLReader $xml
+     * @return array
      */
     protected function _unserializeMeetingXml($xml)
     {
@@ -175,7 +162,7 @@ class Webex_XmlSerializer
 
                 // <meet:schedule>
                 case 'meet:startDate':
-                    $date = $val;
+                    $data['startDate'] = $val;
                     break;
 
                 case 'meet:timeZone':
@@ -237,33 +224,8 @@ class Webex_XmlSerializer
             }
         } while ($xml->read());
 
-        // try checking for timeZone first, timeZone is not provided if
-        // it is outside the XML API value (i.e. Meeting was created by
-        // web GUI)
-        $timezone = null;
-
-        if (isset($data['timeZone'])) {
-            foreach (Webex_Util_Time::getWebexTimeZones() as $tz) {
-                if ($tz['name'] == $data['timeZone'] && isset($tz['timezone'])) {
-                    $timezone = $tz['timezone'];
-                }
-            }
-        }
-        if (empty($timezone) && isset($data['timeZoneID'])) {
-            try {
-                $timezone = Webex_Util_Time::getDateTimeZoneFromTimeZoneId($data['timeZoneID']);
-            } catch (Exception $e) {}
-        }
-
-        if ($timezone) {
-            $timezone = Webex_Util_Time::toDateTimeZone($timezone);
-        }
-        if ($date) {
-            $data['startDate'] = new DateTime($date, $timezone);
-        }
-        var_dumP($data);
-
         $data['attendees'] = $attendees;
+
         return $data;
     }
 
@@ -518,5 +480,52 @@ class Webex_XmlSerializer
         
         } while ($xmlReader->read());
         return $data;
+    }
+
+    /**
+     * Serialize a value to XML string.
+     *
+     * @param  mixed $value
+     * @return string
+     */
+    public function serialize($value, $parent = null)
+    {
+        // array('a', 'b', 'c') => ERROR: list with no parent element
+        // array('a' => array(1, 2, 3), 'd' => 4) => <a>1</a><a>2</a><a>3</a><d>4</d>
+        // array('a' => 1, 'b' => 2, 'c' => 3)    => <a>1</a><b>2</b><c>3</c>
+        if (is_array($value)) {
+            // check if is numeric or alphanumeric, throw error on mixed keys
+            $num = 0;
+            foreach ($value as $key => $val) {
+                $num += is_numeric($key);
+            }
+            if ($num !== 0 && $num !== count($value)) {
+                throw new Exception('Mixed numeric/string keys on the same level');
+            }
+            if ($num && empty($parent)) {
+                throw new Exception('Numeric-keyed array requires a parent element to be set');
+            }
+            $xml = '';
+            if ($num) {
+                // numeric keys cannot act as parents, hence they are not
+                // passed to serialize()
+                foreach ($value as $val) {
+                    $xml .= '<' . $parent . '>' . $this->serialize($val) . '</' . $parent . '>';
+                }
+            } else {
+                foreach ($value as $key => $val) {
+                    if (is_array($val)) {
+                        $xml .= $this->serialize($val, $key);
+                    } else {
+                        $xml .= '<' . $key . '>' . $this->serialize($val) . '</' . $key . '>';
+                    }
+                }
+            }
+            return $xml;
+        }
+        if (is_bool($value)) {
+            return $value ? 'TRUE' : 'FALSE';
+        }
+        return $this->esc($value);
     }
 }

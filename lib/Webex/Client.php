@@ -82,4 +82,12 @@ class Webex_Client
 
         return $this->_services[$serviceName];
     }
+
+    /**
+     * Proxy to {@link getService()}.
+     */
+    public function __get($key)
+    {
+        return $this->getService($key);
+    }
 }

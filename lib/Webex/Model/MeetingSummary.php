@@ -27,9 +27,14 @@ class Webex_Model_MeetingSummary extends Webex_Model_Entity
      * The starting date and time for the first (or only) occurrence of
      * the meeting. It also stores information about the time zone for
      * the geographic location of the meeting.
-     * @var DateTime
+     * @var string
      */
     protected $_startDate;
+
+    /**
+     * @var int
+     */
+    protected $_timeZoneId;
 
     /**
      * The duration of the meeting in minutes.
@@ -150,13 +155,24 @@ how to access the meeting.
     }
 
     /**
-     * @param  int|string|DateTime $startDate
+     * @param  int|string $startDate
      * @throws Exception
      */
     public function setStartDate($startDate)
     {
-        $this->_startDate = Webex_Util_Time::toDateTime($startDate);
+        $this->_startDate = (string) $startDate;
         return $this;
+    }
+
+    public function setTimeZoneId($timeZoneId)
+    {
+        $this->_timeZoneId = (int) $timeZoneId;
+        return $this;
+    }
+
+    public function getTimeZoneId()
+    {
+        return $this->_timeZoneId;
     }
 
     /**
