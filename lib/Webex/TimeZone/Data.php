@@ -1,6 +1,6 @@
 <?php
 // WebEx Time Zone Data
-// Generated on 2015-03-17T00:01:16+01:00
+// Generated on 2015-03-17T00:26:51+01:00
 // PHP version 5.3.15
 // Timezone database version 2012.3
 return array(
@@ -10,6 +10,7 @@ return array(
         'description'  => 'Marshall Islands (Dateline Time, GMT+12:00)',
         'standardName' => 'Dateline Time',
         'daylightName' => '',
+        'region'       => 'Marshall Islands',
         'tzid'         => 'Pacific/Majuro',
     ),
     1 => array(
@@ -18,6 +19,7 @@ return array(
         'description'  => 'Samoa (Samoa Time, GMT-11:00)',
         'standardName' => 'Samoa Time',
         'daylightName' => '',
+        'region'       => 'Samoa',
         'tzid'         => 'Pacific/Pago_Pago',
     ),
     2 => array(
@@ -26,6 +28,7 @@ return array(
         'description'  => 'Honolulu (Hawaii Time, GMT-10:00)',
         'standardName' => 'Hawaii Time',
         'daylightName' => '',
+        'region'       => 'Honolulu',
         'tzid'         => 'Pacific/Honolulu',
     ),
     3 => array(
@@ -34,6 +37,7 @@ return array(
         'description'  => 'Anchorage (Alaska Daylight Time, GMT-08:00)',
         'standardName' => '',
         'daylightName' => 'Alaska Daylight Time',
+        'region'       => 'Anchorage',
         'tzid'         => 'America/Anchorage',
     ),
     4 => array(
@@ -42,6 +46,7 @@ return array(
         'description'  => 'San Francisco (Pacific Daylight Time, GMT-07:00)',
         'standardName' => '',
         'daylightName' => 'Pacific Daylight Time',
+        'region'       => 'San Francisco',
         'tzid'         => 'America/Los_Angeles',
     ),
     5 => array(
@@ -50,6 +55,7 @@ return array(
         'description'  => 'Arizona (Mountain Time, GMT-07:00)',
         'standardName' => 'Mountain Time',
         'daylightName' => '',
+        'region'       => 'Arizona',
         'tzid'         => 'America/Phoenix',
     ),
     6 => array(
@@ -58,6 +64,7 @@ return array(
         'description'  => 'Denver (Mountain Daylight Time, GMT-06:00)',
         'standardName' => '',
         'daylightName' => 'Mountain Daylight Time',
+        'region'       => 'Denver',
         'tzid'         => 'America/Denver',
     ),
     7 => array(
@@ -66,6 +73,7 @@ return array(
         'description'  => 'Chicago (Central Daylight Time, GMT-05:00)',
         'standardName' => '',
         'daylightName' => 'Central Daylight Time',
+        'region'       => 'Chicago',
         'tzid'         => 'America/Chicago',
     ),
     8 => array(
@@ -74,6 +82,7 @@ return array(
         'description'  => 'Mexico City (Mexico Standard Time, GMT-06:00)',
         'standardName' => 'Mexico Standard Time',
         'daylightName' => '',
+        'region'       => 'Mexico City',
         'tzid'         => 'America/Mexico_City',
     ),
     9 => array(
@@ -82,6 +91,7 @@ return array(
         'description'  => 'Saskatchewan (Central Time, GMT-06:00)',
         'standardName' => 'Central Time',
         'daylightName' => '',
+        'region'       => 'Saskatchewan',
         'tzid'         => 'America/Regina',
     ),
     10 => array(
@@ -90,6 +100,7 @@ return array(
         'description'  => 'Bogota (S. America Pacific Time, GMT-05:00)',
         'standardName' => 'S. America Pacific Time',
         'daylightName' => '',
+        'region'       => 'Bogota',
         'tzid'         => 'America/Bogota',
     ),
     11 => array(
@@ -98,6 +109,7 @@ return array(
         'description'  => 'New York (Eastern Daylight Time, GMT-04:00)',
         'standardName' => '',
         'daylightName' => 'Eastern Daylight Time',
+        'region'       => 'New York',
         'tzid'         => 'America/New_York',
     ),
     12 => array(
@@ -106,6 +118,7 @@ return array(
         'description'  => 'Indiana (Eastern Daylight Time, GMT-04:00)',
         'standardName' => '',
         'daylightName' => 'Eastern Daylight Time',
+        'region'       => 'Indiana',
         'tzid'         => 'America/Indianapolis',
     ),
     13 => array(
@@ -114,6 +127,7 @@ return array(
         'description'  => 'Halifax (Atlantic Daylight Time, GMT-03:00)',
         'standardName' => '',
         'daylightName' => 'Atlantic Daylight Time',
+        'region'       => 'Halifax',
         'tzid'         => 'America/Halifax',
     ),
     14 => array(
@@ -122,6 +136,7 @@ return array(
         'description'  => 'La Paz (S. America Western Time, GMT-04:00)',
         'standardName' => 'S. America Western Time',
         'daylightName' => '',
+        'region'       => 'La Paz',
         'tzid'         => 'America/La_Paz',
     ),
     15 => array(
@@ -130,6 +145,7 @@ return array(
         'description'  => 'Newfoundland (Newfoundland Daylight Time, GMT-02:30)',
         'standardName' => '',
         'daylightName' => 'Newfoundland Daylight Time',
+        'region'       => 'Newfoundland',
         'tzid'         => 'America/St_Johns',
     ),
     16 => array(
@@ -138,6 +154,7 @@ return array(
         'description'  => 'Brasilia (S. America Eastern Standard Time, GMT-03:00)',
         'standardName' => 'S. America Eastern Standard Time',
         'daylightName' => '',
+        'region'       => 'Brasilia',
         'tzid'         => 'America/Sao_Paulo',
     ),
     17 => array(
@@ -146,6 +163,7 @@ return array(
         'description'  => 'Buenos Aires (S. America Eastern Time, GMT-03:00)',
         'standardName' => 'S. America Eastern Time',
         'daylightName' => '',
+        'region'       => 'Buenos Aires',
         'tzid'         => 'America/Argentina/Buenos_Aires',
     ),
     18 => array(
@@ -154,6 +172,7 @@ return array(
         'description'  => 'Mid-Atlantic (Mid-Atlantic Time, GMT-02:00)',
         'standardName' => 'Mid-Atlantic Time',
         'daylightName' => '',
+        'region'       => 'Mid-Atlantic',
         'tzid'         => 'Atlantic/South_Georgia',
     ),
     19 => array(
@@ -162,6 +181,7 @@ return array(
         'description'  => 'Azores (Azores Time, GMT-01:00)',
         'standardName' => 'Azores Time',
         'daylightName' => '',
+        'region'       => 'Azores',
         'tzid'         => 'Atlantic/Azores',
     ),
     20 => array(
@@ -170,6 +190,7 @@ return array(
         'description'  => 'Reykjavik (Greenwich Time, GMT)',
         'standardName' => 'Greenwich Time',
         'daylightName' => '',
+        'region'       => 'Reykjavik',
         'tzid'         => 'Atlantic/Reykjavik',
     ),
     21 => array(
@@ -178,6 +199,7 @@ return array(
         'description'  => 'London (GMT Time, GMT)',
         'standardName' => 'GMT Time',
         'daylightName' => '',
+        'region'       => 'London',
         'tzid'         => 'Europe/London',
     ),
     22 => array(
@@ -186,6 +208,7 @@ return array(
         'description'  => 'Amsterdam (Europe Time, GMT+01:00)',
         'standardName' => 'Europe Time',
         'daylightName' => '',
+        'region'       => 'Amsterdam',
         'tzid'         => 'Europe/Amsterdam',
     ),
     23 => array(
@@ -194,6 +217,7 @@ return array(
         'description'  => 'Paris (Europe Time, GMT+01:00)',
         'standardName' => 'Europe Time',
         'daylightName' => '',
+        'region'       => 'Paris',
         'tzid'         => 'Europe/Paris',
     ),
     25 => array(
@@ -202,6 +226,7 @@ return array(
         'description'  => 'Berlin (Europe Time, GMT+01:00)',
         'standardName' => 'Europe Time',
         'daylightName' => '',
+        'region'       => 'Berlin',
         'tzid'         => 'Europe/Berlin',
     ),
     26 => array(
@@ -210,6 +235,7 @@ return array(
         'description'  => 'Athens (Greece Time, GMT+02:00)',
         'standardName' => 'Greece Time',
         'daylightName' => '',
+        'region'       => 'Athens',
         'tzid'         => 'Europe/Athens',
     ),
     28 => array(
@@ -218,6 +244,7 @@ return array(
         'description'  => 'Cairo (Egypt Time, GMT+02:00)',
         'standardName' => 'Egypt Time',
         'daylightName' => '',
+        'region'       => 'Cairo',
         'tzid'         => 'Africa/Cairo',
     ),
     29 => array(
@@ -226,6 +253,7 @@ return array(
         'description'  => 'Pretoria (South Africa Time, GMT+02:00)',
         'standardName' => 'South Africa Time',
         'daylightName' => '',
+        'region'       => 'Pretoria',
         'tzid'         => 'Africa/Johannesburg',
     ),
     30 => array(
@@ -234,6 +262,7 @@ return array(
         'description'  => 'Helsinki (Northern Europe Time, GMT+02:00)',
         'standardName' => 'Northern Europe Time',
         'daylightName' => '',
+        'region'       => 'Helsinki',
         'tzid'         => 'Europe/Helsinki',
     ),
     31 => array(
@@ -242,6 +271,7 @@ return array(
         'description'  => 'Tel Aviv (Israel Standard Time, GMT+02:00)',
         'standardName' => 'Israel Standard Time',
         'daylightName' => '',
+        'region'       => 'Tel Aviv',
         'tzid'         => 'Asia/Jerusalem',
     ),
     32 => array(
@@ -250,6 +280,7 @@ return array(
         'description'  => 'Riyadh (Saudi Arabia Time, GMT+03:00)',
         'standardName' => 'Saudi Arabia Time',
         'daylightName' => '',
+        'region'       => 'Riyadh',
         'tzid'         => 'Asia/Riyadh',
     ),
     33 => array(
@@ -258,6 +289,7 @@ return array(
         'description'  => 'Moscow (Russian Time, GMT+03:00)',
         'standardName' => 'Russian Time',
         'daylightName' => '',
+        'region'       => 'Moscow',
         'tzid'         => 'Europe/Moscow',
     ),
     34 => array(
@@ -266,6 +298,7 @@ return array(
         'description'  => 'Nairobi (Nairobi Time, GMT+03:00)',
         'standardName' => 'Nairobi Time',
         'daylightName' => '',
+        'region'       => 'Nairobi',
         'tzid'         => 'Africa/Nairobi',
     ),
     35 => array(
@@ -274,6 +307,7 @@ return array(
         'description'  => 'Tehran (Iran Standard Time, GMT+03:30)',
         'standardName' => 'Iran Standard Time',
         'daylightName' => '',
+        'region'       => 'Tehran',
         'tzid'         => 'Asia/Tehran',
     ),
     36 => array(
@@ -282,6 +316,7 @@ return array(
         'description'  => 'Abu Dhabi, Muscat (Arabian Time, GMT+04:00)',
         'standardName' => 'Arabian Time',
         'daylightName' => '',
+        'region'       => 'Abu Dhabi, Muscat',
         'tzid'         => 'Asia/Muscat',
     ),
     37 => array(
@@ -290,6 +325,7 @@ return array(
         'description'  => 'Baku (Baku Standard Time, GMT+04:00)',
         'standardName' => 'Baku Standard Time',
         'daylightName' => '',
+        'region'       => 'Baku',
         'tzid'         => 'Asia/Baku',
     ),
     38 => array(
@@ -298,6 +334,7 @@ return array(
         'description'  => 'Kabul (Afghanistan Time, GMT+04:30)',
         'standardName' => 'Afghanistan Time',
         'daylightName' => '',
+        'region'       => 'Kabul',
         'tzid'         => 'Asia/Kabul',
     ),
     39 => array(
@@ -306,6 +343,7 @@ return array(
         'description'  => 'Yekaterinburg (West Asia Time, GMT+05:00)',
         'standardName' => 'West Asia Time',
         'daylightName' => '',
+        'region'       => 'Yekaterinburg',
         'tzid'         => 'Asia/Yekaterinburg',
     ),
     40 => array(
@@ -314,6 +352,7 @@ return array(
         'description'  => 'Islamabad (West Asia Time, GMT+05:00)',
         'standardName' => 'West Asia Time',
         'daylightName' => '',
+        'region'       => 'Islamabad',
         'tzid'         => 'Asia/Karachi',
     ),
     41 => array(
@@ -322,6 +361,7 @@ return array(
         'description'  => 'Mumbai (India Time, GMT+05:30)',
         'standardName' => 'India Time',
         'daylightName' => '',
+        'region'       => 'Mumbai',
         'tzid'         => 'Asia/Kolkata',
     ),
     42 => array(
@@ -330,6 +370,7 @@ return array(
         'description'  => 'Colombo (Colombo Time, GMT+05:30)',
         'standardName' => 'Colombo Time',
         'daylightName' => '',
+        'region'       => 'Colombo',
         'tzid'         => 'Asia/Colombo',
     ),
     43 => array(
@@ -338,6 +379,7 @@ return array(
         'description'  => 'Almaty (Central Asia Time, GMT+06:00)',
         'standardName' => 'Central Asia Time',
         'daylightName' => '',
+        'region'       => 'Almaty',
         'tzid'         => 'Asia/Almaty',
     ),
     44 => array(
@@ -346,6 +388,7 @@ return array(
         'description'  => 'Bangkok (Bangkok Time, GMT+07:00)',
         'standardName' => 'Bangkok Time',
         'daylightName' => '',
+        'region'       => 'Bangkok',
         'tzid'         => 'Asia/Bangkok',
     ),
     45 => array(
@@ -354,6 +397,7 @@ return array(
         'description'  => 'Beijing (China Time, GMT+08:00)',
         'standardName' => 'China Time',
         'daylightName' => '',
+        'region'       => 'Beijing',
         'tzid'         => 'Asia/Shanghai',
     ),
     46 => array(
@@ -362,6 +406,7 @@ return array(
         'description'  => 'Perth (Australia Western Time, GMT+08:00)',
         'standardName' => 'Australia Western Time',
         'daylightName' => '',
+        'region'       => 'Perth',
         'tzid'         => 'Australia/Perth',
     ),
     47 => array(
@@ -370,6 +415,7 @@ return array(
         'description'  => 'Singapore (Singapore Time, GMT+08:00)',
         'standardName' => 'Singapore Time',
         'daylightName' => '',
+        'region'       => 'Singapore',
         'tzid'         => 'Asia/Singapore',
     ),
     48 => array(
@@ -378,6 +424,7 @@ return array(
         'description'  => 'Taipei (Taipei Time, GMT+08:00)',
         'standardName' => 'Taipei Time',
         'daylightName' => '',
+        'region'       => 'Taipei',
         'tzid'         => 'Asia/Taipei',
     ),
     49 => array(
@@ -386,6 +433,7 @@ return array(
         'description'  => 'Tokyo (Japan Time, GMT+09:00)',
         'standardName' => 'Japan Time',
         'daylightName' => '',
+        'region'       => 'Tokyo',
         'tzid'         => 'Asia/Tokyo',
     ),
     50 => array(
@@ -394,6 +442,7 @@ return array(
         'description'  => 'Seoul (Korea Time, GMT+09:00)',
         'standardName' => 'Korea Time',
         'daylightName' => '',
+        'region'       => 'Seoul',
         'tzid'         => 'Asia/Seoul',
     ),
     51 => array(
@@ -402,6 +451,7 @@ return array(
         'description'  => 'Yakutsk (Yakutsk Time, GMT+09:00)',
         'standardName' => 'Yakutsk Time',
         'daylightName' => '',
+        'region'       => 'Yakutsk',
         'tzid'         => 'Asia/Yakutsk',
     ),
     52 => array(
@@ -410,6 +460,7 @@ return array(
         'description'  => 'Adelaide (Australia Central Daylight Time, GMT+10:30)',
         'standardName' => '',
         'daylightName' => 'Australia Central Daylight Time',
+        'region'       => 'Adelaide',
         'tzid'         => 'Australia/Adelaide',
     ),
     53 => array(
@@ -418,6 +469,7 @@ return array(
         'description'  => 'Darwin (Australia Central Time, GMT+09:30)',
         'standardName' => 'Australia Central Time',
         'daylightName' => '',
+        'region'       => 'Darwin',
         'tzid'         => 'Australia/Darwin',
     ),
     54 => array(
@@ -426,6 +478,7 @@ return array(
         'description'  => 'Brisbane (Australia Eastern Time, GMT+10:00)',
         'standardName' => 'Australia Eastern Time',
         'daylightName' => '',
+        'region'       => 'Brisbane',
         'tzid'         => 'Australia/Brisbane',
     ),
     55 => array(
@@ -434,6 +487,7 @@ return array(
         'description'  => 'Sydney (Australia Eastern Daylight Time, GMT+11:00)',
         'standardName' => '',
         'daylightName' => 'Australia Eastern Daylight Time',
+        'region'       => 'Sydney',
         'tzid'         => 'Australia/Sydney',
     ),
     56 => array(
@@ -442,6 +496,7 @@ return array(
         'description'  => 'Guam (West Pacific Time, GMT+10:00)',
         'standardName' => 'West Pacific Time',
         'daylightName' => '',
+        'region'       => 'Guam',
         'tzid'         => 'Pacific/Guam',
     ),
     57 => array(
@@ -450,6 +505,7 @@ return array(
         'description'  => 'Hobart (Tasmania Daylight Time, GMT+11:00)',
         'standardName' => '',
         'daylightName' => 'Tasmania Daylight Time',
+        'region'       => 'Hobart',
         'tzid'         => 'Australia/Hobart',
     ),
     58 => array(
@@ -458,6 +514,7 @@ return array(
         'description'  => 'Vladivostok (Vladivostok Time, GMT+10:00)',
         'standardName' => 'Vladivostok Time',
         'daylightName' => '',
+        'region'       => 'Vladivostok',
         'tzid'         => 'Asia/Vladivostok',
     ),
     59 => array(
@@ -466,6 +523,7 @@ return array(
         'description'  => 'Solomon Is (Central Pacific Time, GMT+11:00)',
         'standardName' => 'Central Pacific Time',
         'daylightName' => '',
+        'region'       => 'Solomon Is',
         'tzid'         => 'Pacific/Guadalcanal',
     ),
     60 => array(
@@ -474,6 +532,7 @@ return array(
         'description'  => 'Wellington (New Zealand Daylight Time, GMT+13:00)',
         'standardName' => '',
         'daylightName' => 'New Zealand Daylight Time',
+        'region'       => 'Wellington',
         'tzid'         => 'Pacific/Auckland',
     ),
     61 => array(
@@ -482,6 +541,7 @@ return array(
         'description'  => 'Fiji (Fiji Standard Time, GMT+12:00)',
         'standardName' => 'Fiji Standard Time',
         'daylightName' => '',
+        'region'       => 'Fiji',
         'tzid'         => 'Pacific/Fiji',
     ),
     130 => array(
@@ -490,6 +550,7 @@ return array(
         'description'  => 'Stockholm (Sweden Time, GMT+01:00)',
         'standardName' => 'Sweden Time',
         'daylightName' => '',
+        'region'       => 'Stockholm',
         'tzid'         => 'Europe/Stockholm',
     ),
     131 => array(
@@ -498,6 +559,7 @@ return array(
         'description'  => 'Tijuana (Mexico Pacific Daylight Time, GMT-07:00)',
         'standardName' => '',
         'daylightName' => 'Mexico Pacific Daylight Time',
+        'region'       => 'Tijuana',
         'tzid'         => 'America/Tijuana',
     ),
     132 => array(
@@ -506,6 +568,7 @@ return array(
         'description'  => 'Chihuahua (Mexico Mountain Standard Time, GMT-07:00)',
         'standardName' => 'Mexico Mountain Standard Time',
         'daylightName' => '',
+        'region'       => 'Chihuahua',
         'tzid'         => 'America/Chihuahua',
     ),
     133 => array(
@@ -514,6 +577,7 @@ return array(
         'description'  => 'Caracas (S. America Western Time, GMT-04:30)',
         'standardName' => 'S. America Western Time',
         'daylightName' => '',
+        'region'       => 'Caracas',
         'tzid'         => 'America/Caracas',
     ),
     134 => array(
@@ -522,6 +586,7 @@ return array(
         'description'  => 'Kuala Lumpur (Malaysia Time, GMT+08:00)',
         'standardName' => 'Malaysia Time',
         'daylightName' => '',
+        'region'       => 'Kuala Lumpur',
         'tzid'         => 'Asia/Kuala_Lumpur',
     ),
     135 => array(
@@ -530,6 +595,7 @@ return array(
         'description'  => 'Recife (S. America Eastern Time, GMT-03:00)',
         'standardName' => 'S. America Eastern Time',
         'daylightName' => '',
+        'region'       => 'Recife',
         'tzid'         => 'America/Recife',
     ),
     136 => array(
@@ -538,6 +604,7 @@ return array(
         'description'  => 'Casablanca (Morocco Standard Time, GMT)',
         'standardName' => 'Morocco Standard Time',
         'daylightName' => '',
+        'region'       => 'Casablanca',
         'tzid'         => 'Africa/Casablanca',
     ),
     137 => array(
@@ -546,6 +613,7 @@ return array(
         'description'  => 'Tegucigalpa (Honduras Time, GMT-06:00)',
         'standardName' => 'Honduras Time',
         'daylightName' => '',
+        'region'       => 'Tegucigalpa',
         'tzid'         => 'America/Tegucigalpa',
     ),
     138 => array(
@@ -554,6 +622,7 @@ return array(
         'description'  => 'Nuuk (Greenland Standard Time, GMT-03:00)',
         'standardName' => 'Greenland Standard Time',
         'daylightName' => '',
+        'region'       => 'Nuuk',
         'tzid'         => 'America/Godthab',
     ),
     139 => array(
@@ -562,6 +631,7 @@ return array(
         'description'  => 'Amman (Jordan Standard Time, GMT+02:00)',
         'standardName' => 'Jordan Standard Time',
         'daylightName' => '',
+        'region'       => 'Amman',
         'tzid'         => 'Asia/Amman',
     ),
     140 => array(
@@ -570,6 +640,7 @@ return array(
         'description'  => 'Istanbul (Eastern Europe Time, GMT+02:00)',
         'standardName' => 'Eastern Europe Time',
         'daylightName' => '',
+        'region'       => 'Istanbul',
         'tzid'         => 'Europe/Istanbul',
     ),
     141 => array(
@@ -578,6 +649,7 @@ return array(
         'description'  => 'Kathmandu (Nepal Time, GMT+05:45)',
         'standardName' => 'Nepal Time',
         'daylightName' => '',
+        'region'       => 'Kathmandu',
         'tzid'         => 'Asia/Kathmandu',
     ),
     142 => array(
@@ -586,6 +658,7 @@ return array(
         'description'  => 'Rome (Europe Time, GMT+01:00)',
         'standardName' => 'Europe Time',
         'daylightName' => '',
+        'region'       => 'Rome',
         'tzid'         => 'Europe/Rome',
     ),
     143 => array(
@@ -594,6 +667,7 @@ return array(
         'description'  => 'West Africa (West Africa Time, GMT+01:00)',
         'standardName' => 'West Africa Time',
         'daylightName' => '',
+        'region'       => 'West Africa',
         'tzid'         => 'Africa/Lagos',
     ),
     144 => array(
@@ -602,6 +676,7 @@ return array(
         'description'  => 'Madrid (Europe Time, GMT+01:00)',
         'standardName' => 'Europe Time',
         'daylightName' => '',
+        'region'       => 'Madrid',
         'tzid'         => 'Europe/Madrid',
     ),
     145 => array(
@@ -610,6 +685,7 @@ return array(
         'description'  => 'Santiago (S. America Western Standard Time, GMT-04:00)',
         'standardName' => 'S. America Western Standard Time',
         'daylightName' => '',
+        'region'       => 'Santiago',
         'tzid'         => 'America/Santiago',
     ),
     146 => array(
@@ -618,6 +694,7 @@ return array(
         'description'  => 'Panama (Eastern Time, GMT-05:00)',
         'standardName' => 'Eastern Time',
         'daylightName' => '',
+        'region'       => 'Panama',
         'tzid'         => 'America/Panama',
     ),
     147 => array(
@@ -626,6 +703,7 @@ return array(
         'description'  => 'Brussels (Europe Time, GMT+01:00)',
         'standardName' => 'Europe Time',
         'daylightName' => '',
+        'region'       => 'Brussels',
         'tzid'         => 'Europe/Brussels',
     ),
     148 => array(
@@ -634,6 +712,7 @@ return array(
         'description'  => 'Asuncion (Paraguay Summer Time, GMT-03:00)',
         'standardName' => 'Paraguay Summer Time',
         'daylightName' => '',
+        'region'       => 'Asuncion',
         'tzid'         => 'America/Asuncion',
     ),
     149 => array(
@@ -642,6 +721,7 @@ return array(
         'description'  => 'Montevideo (Uruguay Time, GMT-03:00)',
         'standardName' => 'Uruguay Time',
         'daylightName' => '',
+        'region'       => 'Montevideo',
         'tzid'         => 'America/Montevideo',
     ),
     150 => array(
@@ -650,6 +730,7 @@ return array(
         'description'  => 'Cape Verde (Cape Verde Time, GMT-01:00)',
         'standardName' => 'Cape Verde Time',
         'daylightName' => '',
+        'region'       => 'Cape Verde',
         'tzid'         => 'Atlantic/Cape_Verde',
     ),
     151 => array(
@@ -658,6 +739,7 @@ return array(
         'description'  => 'Windhoek (West Africa Summer Time, GMT+02:00)',
         'standardName' => 'West Africa Summer Time',
         'daylightName' => '',
+        'region'       => 'Windhoek',
         'tzid'         => 'Africa/Windhoek',
     ),
     152 => array(
@@ -666,6 +748,7 @@ return array(
         'description'  => 'Yangon (Myanmar Time, GMT+06:30)',
         'standardName' => 'Myanmar Time',
         'daylightName' => '',
+        'region'       => 'Yangon',
         'tzid'         => 'Asia/Rangoon',
     ),
     153 => array(
@@ -674,6 +757,7 @@ return array(
         'description'  => 'Tonga (Tonga Time, GMT+13:00)',
         'standardName' => 'Tonga Time',
         'daylightName' => '',
+        'region'       => 'Tonga',
         'tzid'         => 'Pacific/Tongatapu',
     ),
     154 => array(
@@ -682,6 +766,7 @@ return array(
         'description'  => 'Jakarta (Western Indonesia Time, GMT+07:00)',
         'standardName' => 'Western Indonesia Time',
         'daylightName' => '',
+        'region'       => 'Jakarta',
         'tzid'         => 'Asia/Jakarta',
     ),
     155 => array(
@@ -690,6 +775,7 @@ return array(
         'description'  => 'Yerevan (Armenia Time, GMT+04:00)',
         'standardName' => 'Armenia Time',
         'daylightName' => '',
+        'region'       => 'Yerevan',
         'tzid'         => 'Asia/Yerevan',
     ),
     156 => array(
@@ -698,6 +784,7 @@ return array(
         'description'  => 'Novosibirsk (Novosibirsk Time, GMT+06:00)',
         'standardName' => 'Novosibirsk Time',
         'daylightName' => '',
+        'region'       => 'Novosibirsk',
         'tzid'         => 'Asia/Novosibirsk',
     ),
 );

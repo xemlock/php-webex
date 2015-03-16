@@ -1,6 +1,7 @@
 <?php
 
 define('TZID', 'tzid');
+define('REGION', 'region');
 
 // this list has mixed ST and DST
 $lines = file('timezone_dropdown.js');
@@ -18,11 +19,12 @@ $timezones = array();
 foreach ($data as $tz) {
     $id = (int) $tz['value'];
     $label = $tz['label'];
-    preg_match('/(?P<location>[^\(]+)\((?P<name>[^,]+),\s*GMT(?P<offset>[+-]\d{2}:\d{2})?/', $label, $match);
+
+    preg_match('/(?P<region>[^\(]+)\((?P<name>[^,]+),\s*GMT(?P<offset>[+-]\d{2}:\d{2})?/', $label, $match);
 
     $match = array_map('trim', $match);
 
-    $location = $match['location'];
+    $region = $match['region'];
     $name = $match['name'];
 
     $standardName = stripos($name, 'Daylight') === false ? $name : '';
@@ -37,10 +39,11 @@ foreach ($data as $tz) {
         'timeZoneID'   => $id,
         'gmtOffset'    => $offset, // difference between time zone's standard time and UTC in minutes
         'description'  => $label,
+        // extra fields, undefined in nsl namespace
         'standardName' => $standardName,
         'daylightName' => $daylightName,
+        REGION         => $region,
         TZID           => null, // ID in tz database
-        'location'     => $location, // only for matching, will be removed
     );
 }
 
@@ -94,8 +97,7 @@ $aliases = array(
 // match build-in PHP timezones by name only
 foreach ($timezones as &$timezone) {
     $matched = false;
-    $rs = array_map('trim', explode(',', $timezone['location']));
-    unset($timezone['location']);
+    $rs = array_map('trim', explode(',', $timezone[REGION]));
 
     foreach (DateTimeZone::listIdentifiers() as $name) {
         $pos = strrpos($name, '/');
