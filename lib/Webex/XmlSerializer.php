@@ -304,28 +304,27 @@ class Webex_XmlSerializer
         $endDateMax = $query->getEndDateMax();
 
         if ($startDateMin || $startDateMax || $endDateMin || $endDateMax) {
-            $tz = new DateTimeZone('UTC');
-            $xml .= '<timeZoneID>' . Webex_Util_Time::getTimeZoneID($tz) . '</timeZoneID>';
+            $xml .= '<timeZoneID>' . (int) $query->getTimeZoneId() . '</timeZoneID>';
         }
 
         if ($startDateMin) {
-            $dt = new DateTime('@' . $startDateMin->getTimestamp(), $tz);
-            $xml .= '<startDateStart>' . $dt->format(self::DATE_FORMAT) . '</startDateStart>';
+            $dt = strtotime($startDateMin);
+            $xml .= '<startDateStart>' . date(self::DATE_FORMAT, $dt) . '</startDateStart>';
         }
 
         if ($startDateMax) {
-            $dt = new DateTime('@' . $startDateMax->getTimestamp(), $tz);
-            $xml .= '<startDateEnd>' . $dt->format(self::DATE_FORMAT) . '</startDateEnd>';
+            $dt = strtotime($startDateMax);
+            $xml .= '<startDateEnd>' . date(self::DATE_FORMAT, $dt) . '</startDateEnd>';
         }
 
         if ($endDateMin) {
-            $dt = new DateTime('@' . $endDateMin->getTimestamp(), $tz);
-            $xml .= '<endDateStart>' . $dt->format(self::DATE_FORMAT) . '</endDateStart>';
+            $dt = strtotime($endDateMin);
+            $xml .= '<endDateStart>' . date(self::DATE_FORMAT, $dt) . '</endDateStart>';
         }
         
         if ($endDateMax) {
-            $dt = new DateTime('@' . $endDateMax->getTimestamp(), $tz);
-            $xml .= '<endDateEnd>' . $dt->format(self::DATE_FORMAT) . '</endDateEnd>';
+            $dt = strtotime($endDateMax);
+            $xml .= '<endDateEnd>' . date(self::DATE_FORMAT, $dt) . '</endDateEnd>';
         }
 
         $xml .= '</dateScope>';

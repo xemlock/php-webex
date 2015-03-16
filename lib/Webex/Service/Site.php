@@ -11,7 +11,7 @@ class Webex_Service_Site extends Webex_Service_Abstract
      * @param  int|array $timeZoneID
      * @return array
      */
-    public function lstTimeZone($date = null, $timeZoneID = null)
+    public function lstTimeZone($date = null, $timeZoneID = null) // {{{
     {
         $data = array();
 
@@ -47,18 +47,18 @@ class Webex_Service_Site extends Webex_Service_Abstract
 
         $timeZones = array();
         foreach ($nodes[1]->bodyContent->children(self::API_SCHEMA_SITE) as $node) {
-            // for each timeZone entry
-            echo $node->getName(), '<br/>';
-            $timeZones[] = array(
-                'timeZoneID'       => intval((string) $node->timeZoneID),
-                'gmtOffset'        => intval((string) $node->gmtOffset),
-                'description'      => (string) $node->description,
-                'hideTimeZoneName' => $this->toBool($node->hideTimeZoneName),
-                'fallInDST'        => $this->toBool($node->fallInDST),
-            );
+            if ($node->getName() === 'timeZone') {
+                $timeZones[] = array(
+                    'timeZoneID'       => intval((string) $node->timeZoneID),
+                    'gmtOffset'        => intval((string) $node->gmtOffset),
+                    'description'      => (string) $node->description,
+                    'hideTimeZoneName' => $this->toBool($node->hideTimeZoneName),
+                    'fallInDST'        => $this->toBool($node->fallInDST),
+                );
+            }
         }
         return $timeZones;
-    }
+    } // }}}
 
     public function toBool($value)
     {

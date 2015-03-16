@@ -39,12 +39,6 @@ class Webex_Model_UserSummary extends Webex_Model_Entity
      */
     protected $_lastName;
 
-    /**
-     * The creation date for the user account.
-     * @var DateTime
-     */
-    protected $_regDate;
-
     public function getUsername()
     {
         return $this->_username;
@@ -97,24 +91,6 @@ class Webex_Model_UserSummary extends Webex_Model_Entity
     public function setLastName($lastName)
     {
         $this->_lastName = (string) $lastName;
-        return $this;
-    }
-
-    /**
-     * @return DateTime|null
-     */
-    public function getRegDate()
-    {
-        return $this->_regDate;
-    }
-
-    /**
-     * @param  int|string|DateTime $date
-     * @throws Exception
-     */
-    public function setRegDate($date)
-    {
-        $this->_regDate = Webex_Util_Time::toDateTime($date);
         return $this;
     }
 }

@@ -5,6 +5,8 @@ class Webex_Model_MeetingQuery extends Webex_Model_Query
     // specific to meeting listing, timezone will be unified
     // during search all dates will be converted to GTM+00:00 timezone
     // <dateScope>
+    protected $_timeZoneId;
+
     protected $_startDateMin;
 
     protected $_startDateMax;
@@ -26,6 +28,17 @@ class Webex_Model_MeetingQuery extends Webex_Model_Query
     protected $_meetingKey;
     // </meetingKey>
 
+    public function setTimeZoneId($timeZoneId)
+    {
+        $this->_timeZoneId = (int) $timeZoneId;
+        return $this;
+    }
+
+    public function getTimeZoneId()
+    {
+        return $this->_timeZoneId;
+    }
+
     /**
      * Proxy to {@link setStartDateMin()}.
      *
@@ -45,16 +58,16 @@ class Webex_Model_MeetingQuery extends Webex_Model_Query
     }
 
     /**
-     * @param  int|string|DateTime $startDate
+     * @param  string $startDate
      */
     public function setStartDateMin($startDateMin)
     {
-        $this->_startDateMin = Webex_Util_Time::toDateTime($startDateMin);
+        $this->_startDateMin = (string) $startDateMin;
         return $this;
     }
 
     /**
-     * @return DateTime|null
+     * @return string|null
      */
     public function getStartDateMax()
     {
@@ -62,18 +75,18 @@ class Webex_Model_MeetingQuery extends Webex_Model_Query
     }
 
     /**
-     * @param  int|string|DateTime $startDate
+     * @param  int|string $startDate
      */
     public function setStartDateMax($startDateMax)
     {
-        $this->_startDateMax = Webex_Util_Time::toDateTime($startDateMax);
+        $this->_startDateMax = (string) $startDateMax;
         return $this;
     }
 
     /**
      * Proxy to {@link setEndDateMin()}.
      *
-     * @param  int|string|DateTime $date
+     * @param  int|string $date
      */
     public function setEndDate($date)
     {
@@ -81,11 +94,11 @@ class Webex_Model_MeetingQuery extends Webex_Model_Query
     }
 
     /**
-     * @param  int|string|DateTime $date
+     * @param  int|string $date
      */
     public function setEndDateMin($date)
     {
-        $this->_endDateMin = Webex_Util_Time::toDateTime($date);
+        $this->_endDateMin = (string) $date;
         return $this;
     }
 
@@ -98,7 +111,7 @@ class Webex_Model_MeetingQuery extends Webex_Model_Query
     }
 
     /**
-     * @return DateTime|null
+     * @return string|null
      */
     public function getEndDateMax()
     {
@@ -106,11 +119,11 @@ class Webex_Model_MeetingQuery extends Webex_Model_Query
     }
 
     /**
-     * @param  int|string|DateTime $date
+     * @param  int|string $date
      */
     public function setEndDateMax($date)
     {
-        $this->_endDateMax = Webex_Util_Time::toDateTime($date);
+        $this->_endDateMax = (string) $date;
         return $this;
     }
 
