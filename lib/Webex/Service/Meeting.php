@@ -130,10 +130,10 @@ class Webex_Service_Meeting extends Webex_Service_Abstract
             $this->_parseResponse($response);
             $data = $this->_serializer->unserializeMeetingSummaries($response);
 
-        } catch (Exception $e) {
+        } catch (Webex_Exception_ResponseException $e) {
             // check for "000015: Sorry, no record found" exception, it is perfectly ok
             // if no results are found here
-            if ($e->getCode() !== 15) {
+            if ($e->getExceptionID() !== 15) {
                 throw $e;
             }
             $data = array(
