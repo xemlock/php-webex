@@ -3,6 +3,8 @@
 class Webex_Service_Site extends Webex_Service_Abstract
 {
     const LST_TIME_ZONE = 'site.LstTimeZone';
+    const GET_SITE      = 'site.GetSite';
+    const SET_SITE      = 'site.SetSite';
 
     /**
      * Get information about WebEx time zones.
@@ -52,6 +54,18 @@ class Webex_Service_Site extends Webex_Service_Abstract
         }
         return $timeZones;
     } // }}}
+
+    public function getSite($eventCenter = false)
+    {
+        $data = array();
+
+        if ($eventCenter) {
+            $data['returnSettings']['eventCenter'] = (bool) $eventCenter;
+        }
+
+        $response = $this->_webex->transmit(self::GET_SITE, $this->_serializer->serialize($data));
+        throw new Exception('Not implemented');
+    }
 
     public function toBool($value)
     {
