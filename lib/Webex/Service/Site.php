@@ -2,11 +2,11 @@
 
 class Webex_Service_Site extends Webex_Service_Abstract
 {
-    const API_SCHEMA_MEETING = 'http://www.webex.com/schemas/2002/06/service/meeting';
-    const API_SCHEMA_SERVICE = 'http://www.webex.com/schemas/2002/06/service';
-    const API_SCHEMA_SITE    = 'http://www.webex.com/schemas/2002/06/service/site';
+    const LST_TIME_ZONE = 'site.LstTimeZone';
 
     /**
+     * Get information about WebEx time zones.
+     *
      * @param  string $date
      * @param  int|array $timeZoneID
      * @return array
@@ -34,19 +34,12 @@ class Webex_Service_Site extends Webex_Service_Abstract
         }
 
         $request = $this->_serializer->serialize($data);
-        $response = $this->_webex->transmit('site.LstTimeZone', $request);
+        $response = $this->_webex->transmit(self::LST_TIME_ZONE, $request);
 
-        $this->_parseResponse($response);
-        
-        $xml = simplexml_load_string($response);
-
-        $nodes = $xml->children(self::API_SCHEMA_SERVICE);
-
-        // $header = $nodes[0]
-        // $body = $nodes[1]
+        $bodyContent = $this->_parseResponse($response);
 
         $timeZones = array();
-        foreach ($nodes[1]->bodyContent->children(self::API_SCHEMA_SITE) as $node) {
+        foreach ($bodyContent->children(self::SCHEMA_SITE) as $node) {
             if ($node->getName() === 'timeZone') {
                 $timeZones[] = array(
                     'timeZoneID'       => intval((string) $node->timeZoneID),

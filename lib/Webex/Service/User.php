@@ -8,26 +8,17 @@ class Webex_Service_User extends Webex_Service_Abstract
     /**
      * Returns a host authentication ticket, which is a temporary
      * identifier string associated with a host.
+     *
+     * @return string
      */
-    public function getLoginTicket()
+    public function getLoginTicket() // {{{
     {
         $response = $this->_webex->transmit(self::GET_LOGIN_TICKET);
-        $this->_parseResponse($response);
+        $bodyContent = $this->_parseResponse($response);
 
-        $xmlReader = new Webex_XmlReader();
-        $xmlReader->xml($response);
-
-        $ticket = null;
-
-        while ($xmlReader->read(XMLReader::ELEMENT)) {
-            if ($xmlReader->name === 'use:ticket') {
-                $ticket = $xmlReader->readString();
-                break;
-            }
-        }
-
+        $ticket = (string) $bodyContent->children(self::SCHEMA_USER)->ticket;
         return $ticket;
-    }
+    } // }}}
 
     /**
      * Queries WebEx User Service for summary information of the host users.
@@ -38,7 +29,7 @@ class Webex_Service_User extends Webex_Service_Abstract
     public function queryUsers(Webex_Model_UserQuery $query = null)
     {
         $response = $this->_webex->transmit(
-            'user.LstsummaryUser',
+            self::LST_SUMMARY_USER,
             $query ? $this->_serializer->serializeUserQuery($query) : ''
         );
         $this->_parseResponse($response);
