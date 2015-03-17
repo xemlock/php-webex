@@ -5,6 +5,9 @@
  */
 class Webex_Service_Meeting extends Webex_Service_Abstract
 {
+    const GET_JOIN_URL_MEETING = 'meeting.GetjoinurlMeeting';
+    const GET_HOST_URL_MEETING = 'meeting.GethosturlMeeting';
+
     /**
      * Retrieve meeting from WebEx meeting service.
      *
@@ -153,69 +156,60 @@ class Webex_Service_Meeting extends Webex_Service_Abstract
         return $results;
     }
 
-    public function getjoinurlMeeting(array $options)
+    /**
+     * Get the attendees' URL for joining a meeting.
+     *
+     * @param  int|string $sessionKey
+     * @param  array $options (Optional)
+     * @return array
+     */
+    public function getJoinUrlMeeting($sessionKey, array $options = null) // {{{
     {
-        $xml = '<sessionKey>' . $this->_serializer->esc($options['sessionKey']) . '</sessionKey>';
+        // sessionKey is the only required value, its absence, due to
+        // missing or empty <sessionKey> or <meetingKey> element, result in
+        // error
+
+        $data = array();
+        $data['sessionKey'] = (string) $sessionKey;
+
         if (isset($options['attendeeName'])) {
-            $xml .= '<attendeeName>' . $this->_serializer->esc($options['attendeeName']) . '</attendeeName>';
+            $data['attendeeName'] = (string) $options['attendeeName'];
         }
+
         if (isset($options['attendeeEmail'])) {
-            $xml .= '<attendeeEmail>' . $this->_serializer->esc($options['attendeeEmail']) . '</attendeeEmail>';
+            $data['attendeeEmail'] = (string) $options['attendeeEmail'];
         }
+
         if (isset($options['meetingPW'])) {
-            $xml .= '<meetingPW>' . $this->_serializer->esc($options['meetingPW']) . '</meetingPW>';
+            $data['meetingPW'] = (string) $options['meetingPW'];
         }
-        // attendeeEmail + meetingPW are required for proper URL
 
-        // joinurl may be specific to user
-        $response = $this->_webex->transmit(
-            'meeting.GetjoinurlMeeting',
-            $xml
-        );
-        $this->_parseResponse($response);
+        $response = $this->_webex->transmit(self::GET_JOIN_URL_MEETING, $this->_serializer->serialize($data));
+        $bodyContent = $this->_parseResponse($response)->children(self::SCHEMA_MEETING);
 
-        $xmlReader = new Webex_XmlReader();
-        $xmlReader->xml($response);
-        $urls = array(
-            'joinURL' => null,
-            'inviteURL' => null,
-        );
-        while ($xmlReader->read()) {
-            if ($xmlReader->nodeType !== XMLReader::ELEMENT) {
-                continue;
-            }
-            switch ($xmlReader->name) {
-                case 'meet:joinMeetingURL':
-                    $urls['joinURL'] = $xmlReader->readString();
-                    break;
+        $joinMeetingURL     = (string) $bodyContent->joinMeetingURL;
+        $inviteMeetingURL   = (string) $bodyContent->inviteMeetingURL;
+        $registerMeetingURL = (string) $bodyContent->registerMeetingURL;
 
-                case 'meet:inviteMeetingURL':
-                    $urls['inviteURL'] = $xmlReader->readString();
-                    break;
-            }
-        }
-        return $urls;
-    }
+        return compact('joinMeetingURL', 'inviteMeetingURL', 'registerMeetingURL');
+    } // }}}
 
-    public function gethosturlMeeting(array $options)
+    /**
+     * Get the host's URL for starting a meeting.
+     *
+     * @param  int|string $sessionKey
+     * @return string
+     */
+    public function getHostUrlMeeting($sessionKey) // {{{
     {
-        // joinurl may be specific to user
-        $response = $this->_webex->transmit(
-            'meeting.GethosturlMeeting',
-            '<sessionKey>' . $this->_serializer->esc($options['sessionKey']) . '</sessionKey>'
-        );
-        $this->_parseResponse($response);
+        $data = array();
+        $data['sessionKey'] = (string) $sessionKey;
 
-        $xmlReader = new Webex_XmlReader();
-        $xmlReader->xml($response);
-        while ($xmlReader->read()) {
-            if ($xmlReader->nodeType !== XMLReader::ELEMENT) {
-                continue;
-            }
-            if ($xmlReader->name === 'meet:hostMeetingURL') {
-                return $xmlReader->readString();
-            }
-        }
-        // unlikely to happen
-    }
+        $response = $this->_webex->transmit(self::GET_HOST_URL_MEETING, $this->_serializer->serialize($data));
+
+        $bodyContent = $this->_parseResponse($response)->children(self::SCHEMA_MEETING);
+        $hostMeetingURL = (string) $bodyContent->hostMeetingURL;
+
+        return $hostMeetingURL;
+    } // }}}
 }
