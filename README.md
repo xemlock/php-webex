@@ -1,3 +1,5 @@
+_This is an experimental and by no means stable library! Use at your own risk._
+
 # WebEx SDK for PHP
 
 ## Usage

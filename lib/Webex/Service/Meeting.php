@@ -27,13 +27,17 @@ class Webex_Service_Meeting extends Webex_Service_Abstract
     /**
      * Save meeting to WebEx meeting service.
      *
-     * @param  Webex_Model_Meeting $meeting
+     * @param  Webex_Model_Meeting|array $meeting
      * @param  bool $refresh OPTIONAL
      * @return void
      * @throws Exception
      */
-    public function saveMeeting(Webex_Model_Meeting $meeting, $refresh = true)
+    public function saveMeeting($meeting, $refresh = true)
     {
+        if (!$meeting instanceof Webex_Model_Meeting) {
+            $meeting = new Webex_Model_Meeting($meeting);
+        }
+
         $id = $meeting->getId();
 
         if (empty($id)) {
@@ -119,11 +123,15 @@ class Webex_Service_Meeting extends Webex_Service_Abstract
     }
 
     /**
-     * @param  Webex_Model_MeetingQuery|null $query OPTIONAL
+     * @param  Webex_Model_MeetingQuery|array $query OPTIONAL
      * @return Webex_Collection_ResultCollection<Webex_Model_MeetingSummary>
      */
-    public function getMeetingSummaries(Webex_Model_MeetingQuery $query = null)
+    public function getMeetingSummaries($query = null)
     {
+        if ($query !== null && !$query instanceof Webex_Model_MeetingQuery) {
+            $query = new Webex_Model_MeetingQuery($query);
+        }
+
         $response = $this->_webex->transmit(
             'meeting.LstsummaryMeeting',
             $query ? $this->_serializer->serializeMeetingQuery($query) : ''

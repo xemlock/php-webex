@@ -2,11 +2,15 @@
 
 class Webex_Client
 {
-    protected $webExID;
-    protected $password;
-    protected $siteID;
-    protected $siteName;
-    protected $partnerID;
+    /**
+     * @var Webex_Type_SecurityContext
+     */
+    protected $_securityContext;
+
+    /**
+     * @var Webex_XmlSerializer
+     */
+    protected $_serializer;
 
     /**
      * @var array
@@ -14,19 +18,16 @@ class Webex_Client
     protected $_services;
 
     /**
-     * @param  $webExID   A WebEx-maintained reference to the WebEx user ID for the meeting host
-     * @param  $password  The password for the user with a webExID
-     * @param  $siteID    The WebEx-assigned identification number that uniquely identifies your website
-     * @param  $siteName  The first string in your WebEx site URL, provided by WebEx
-     * @param  $partnerID Optional. A reference to the WebEx partner, provided by WebEx
+     * @param array|Webex_Type_SecurityContext $securityContext
      */
-    public function __construct($webExID, $password, $siteID, $siteName, $partnerID = null)
+    public function __construct($securityContext)
     {
-        $this->webExID   = $webExID;
-        $this->password  = $password;
-        $this->siteID    = $siteID;
-        $this->siteName  = $siteName;
-        $this->partnerID = $partnerID;
+        if (!$securityContext instanceof Webex_Type_SecurityContext) {
+            $securityContext = new Webex_Type_SecurityContext($securityContext);
+        }
+
+        $this->_securityContext = $securityContext;
+        $this->_serializer = new Webex_XmlSerializer();
     }
 
     public function transmit($service, $payload = null)
@@ -35,22 +36,17 @@ class Webex_Client
         $xml = '<' . '?xml version="1.0" encoding="UTF-8"?' . '>';
         $xml .= '<serv:message xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">';
         $xml .= '<header>';
-        $xml .= '<securityContext>';
-        $xml .= '<webExID>' . $this->webExID . '</webExID>';
-        $xml .= '<password>' . $this->password . '</password>';
-        $xml .= '<siteID>' . $this->siteID . '</siteID>';
-        $xml .= '<partnerID>' . $this->partnerID . '</partnerID>';
-        $xml .= '</securityContext>';
+        $xml .= $this->_serializer->serialize($this->_securityContext);
         $xml .= '</header>';
         $xml .= '<body>';
         $xml .= '<bodyContent xsi:type="java:com.webex.service.binding.' . $service  . '">';
-        $xml .= $payload;
+        $xml .= is_string($payload) ? $payload : $this->_serializer->serialize($payload);
         $xml .= '</bodyContent>';
         $xml .= '</body>';
         $xml .= '</serv:message>';
 
         // Send request
-        $url = sprintf('%s.webex.com/WBXService/XMLService', $this->siteName);
+        $url = sprintf('%s.webex.com/WBXService/XMLService', $this->_securityContext->getSiteName());
         $headers = array(
             'User-Agent: Webex_Client',
             'Content-Type: application/x-www-form-urlencoded',
@@ -69,6 +65,22 @@ class Webex_Client
 
         $response = curl_exec($ch);
         return $response;
+    }
+
+    /**
+     * @return Webex_Type_SecurityContext
+     */
+    public function getSecurityContext()
+    {
+        return $this->_securityContext;
+    }
+
+    /**
+     * @return Webex_XmlSerializer
+     */
+    public function getSerializer()
+    {
+        return $this->_serializer;
     }
 
     public function getService($serviceName)

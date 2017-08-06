@@ -321,7 +321,7 @@ class Webex_XmlSerializer
             $dt = strtotime($endDateMin);
             $xml .= '<endDateStart>' . date(self::DATE_FORMAT, $dt) . '</endDateStart>';
         }
-        
+
         if ($endDateMax) {
             $dt = strtotime($endDateMax);
             $xml .= '<endDateEnd>' . date(self::DATE_FORMAT, $dt) . '</endDateEnd>';
@@ -476,7 +476,7 @@ class Webex_XmlSerializer
                     $data['lastName'] = $xmlReader->readString();
                     break;
             }
-        
+
         } while ($xmlReader->read());
         return $data;
     }
@@ -489,6 +489,10 @@ class Webex_XmlSerializer
      */
     public function serialize($value, $parent = null)
     {
+        if ($value instanceof Webex_XmlSerializable) {
+            $value = $value->xmlSerialize();
+        }
+
         // array('a', 'b', 'c') => ERROR: list with no parent element
         // array('a' => array(1, 2, 3), 'd' => 4) => <a>1</a><a>2</a><a>3</a><d>4</d>
         // array('a' => 1, 'b' => 2, 'c' => 3)    => <a>1</a><b>2</b><c>3</c>
@@ -512,12 +516,18 @@ class Webex_XmlSerializer
                     $xml .= '<' . $parent . '>' . $this->serialize($val) . '</' . $parent . '>';
                 }
             } else {
+                if ($parent) {
+                    $xml .= '<' . $parent . '>';
+                }
                 foreach ($value as $key => $val) {
                     if (is_array($val)) {
                         $xml .= $this->serialize($val, $key);
                     } else {
                         $xml .= '<' . $key . '>' . $this->serialize($val) . '</' . $key . '>';
                     }
+                }
+                if ($parent) {
+                    $xml .= '</' . $parent . '>';
                 }
             }
             return $xml;
