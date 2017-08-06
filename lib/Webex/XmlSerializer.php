@@ -385,8 +385,16 @@ class Webex_XmlSerializer
 
     // so far only basic querying support is provided, only search
     // by username and email
-    public function serializeUserQuery(Webex_Model_UserQuery $query)
+    /**
+     * @param Webex_Model_UserQuery|array $query
+     * @return string
+     */
+    public function serializeUserQuery($query)
     {
+        if (!$query instanceof Webex_Model_UserQuery) {
+            $query = new Webex_Model_UserQuery($query);
+        }
+
         $xml = $this->serializeQuery($query, array(
             // 'UID' => ?, valid column values are undocumented in XML API Reference
         ));
@@ -410,7 +418,6 @@ class Webex_XmlSerializer
         $xmlReader = new Webex_XmlReader();
         $xmlReader->xml($response);
 
-        $meta = array();
         $data = array(
             'total'  => 0,
             'offset' => 0,

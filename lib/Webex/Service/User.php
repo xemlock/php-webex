@@ -23,18 +23,33 @@ class Webex_Service_User extends Webex_Service_Abstract
     /**
      * Queries WebEx User Service for summary information of the host users.
      *
-     * @param  Webex_Model_UserQuery $query OPTIONAL
+     * @param  Webex_Model_UserQuery|array $query OPTIONAL
      * @return Webex_Collection_ResultsCollection<Webex_Model_UserSummary>
      */
-    public function queryUsers(Webex_Model_UserQuery $query = null)
+    public function queryUsers($query = null)
     {
         $response = $this->_webex->transmit(
             self::LST_SUMMARY_USER,
             $query ? $this->_serializer->serializeUserQuery($query) : ''
         );
-        $this->_parseResponse($response);
 
-        $data = $this->_serializer->unserializeUserSummaries($response);
+        try {
+            $this->_parseResponse($response);
+            $data = $this->_serializer->unserializeUserSummaries($response);
+
+        } catch (Exception $e) {
+            // API responds with 'validation: Null Point Error' if no user was found,
+            // handle this gracefully, as empty results is no reason for throwing exceptions
+            if (stripos($e->getMessage(), 'validation: Null Point Error') !== false) {
+                $data = array(
+                    'total'  => 0,
+                    'offset' => 0,
+                    'items'  => array(),
+                );
+            } else {
+                throw $e;
+            }
+        }
 
         $results = new Webex_Collection_ResultCollection('Webex_Model_UserSummary');
         $results->setTotal($data['total']);
@@ -44,7 +59,6 @@ class Webex_Service_User extends Webex_Service_Abstract
             $results->add(new Webex_Model_UserSummary($item));
         }
 
-        assert('count($results) === $data["returned"]');
         return $results;
     }
 }
