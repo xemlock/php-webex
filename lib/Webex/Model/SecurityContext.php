@@ -1,6 +1,6 @@
 <?php
 
-class Webex_Type_SecurityContext extends Webex_Type_Abstract implements Webex_XmlSerializable
+class Webex_Model_SecurityContext extends Webex_Model_Entity implements Webex_XmlSerializable
 {
     /**
      * A WebEx-maintained reference to the WebEx user ID for the meeting host
@@ -66,7 +66,7 @@ class Webex_Type_SecurityContext extends Webex_Type_Abstract implements Webex_Xm
 
     /**
      * @param string $webExID
-     * @return Webex_Type_SecurityContext
+     * @return Webex_Model_SecurityContext
      */
     public function setWebExID($webExID)
     {
@@ -84,7 +84,7 @@ class Webex_Type_SecurityContext extends Webex_Type_Abstract implements Webex_Xm
 
     /**
      * @param string $password
-     * @return Webex_Type_SecurityContext
+     * @return Webex_Model_SecurityContext
      */
     public function setPassword($password)
     {
@@ -102,7 +102,7 @@ class Webex_Type_SecurityContext extends Webex_Type_Abstract implements Webex_Xm
 
     /**
      * @param int $siteID
-     * @return Webex_Type_SecurityContext
+     * @return Webex_Model_SecurityContext
      */
     public function setSiteID($siteID)
     {
@@ -120,7 +120,7 @@ class Webex_Type_SecurityContext extends Webex_Type_Abstract implements Webex_Xm
 
     /**
      * @param string $siteName
-     * @return Webex_Type_SecurityContext
+     * @return Webex_Model_SecurityContext
      */
     public function setSiteName($siteName)
     {
@@ -138,7 +138,7 @@ class Webex_Type_SecurityContext extends Webex_Type_Abstract implements Webex_Xm
 
     /**
      * @param string $partnerID
-     * @return Webex_Type_SecurityContext
+     * @return Webex_Model_SecurityContext
      */
     public function setPartnerID($partnerID)
     {
@@ -156,7 +156,7 @@ class Webex_Type_SecurityContext extends Webex_Type_Abstract implements Webex_Xm
 
     /**
      * @param string $email
-     * @return Webex_Type_SecurityContext
+     * @return Webex_Model_SecurityContext
      */
     public function setEmail($email)
     {
@@ -174,7 +174,7 @@ class Webex_Type_SecurityContext extends Webex_Type_Abstract implements Webex_Xm
 
     /**
      * @param string $sessionTicket
-     * @return Webex_Type_SecurityContext
+     * @return Webex_Model_SecurityContext
      */
     public function setSessionTicket($sessionTicket)
     {
@@ -192,7 +192,7 @@ class Webex_Type_SecurityContext extends Webex_Type_Abstract implements Webex_Xm
 
     /**
      * @param string $clientID
-     * @return Webex_Type_SecurityContext
+     * @return Webex_Model_SecurityContext
      */
     public function setClientID($clientID)
     {
@@ -210,7 +210,7 @@ class Webex_Type_SecurityContext extends Webex_Type_Abstract implements Webex_Xm
 
     /**
      * @param string $clientSecret
-     * @return Webex_Type_SecurityContext
+     * @return Webex_Model_SecurityContext
      */
     public function setClientSecret($clientSecret)
     {

@@ -5,7 +5,7 @@ class Webex_Collection_Collection implements Countable, ArrayAccess, IteratorAgg
     /**
      * @var string|null
      */
-    protected $_itemClass;
+    protected $_itemType;
 
     /**
      * @var array
@@ -13,23 +13,44 @@ class Webex_Collection_Collection implements Countable, ArrayAccess, IteratorAgg
     protected $_items;
 
     /**
-     * @param  string $itemClass OPTIONAL
-     * @return void
+     * @param string $itemType OPTIONAL
      */
-    public function __construct($itemClass = null)
+    public function __construct($itemType = null)
     {
-        if ($itemClass) {
-            $this->_itemClass = (string) $itemClass;
+        if ($itemType) {
+            $this->_setItemType($itemType);
         }
         $this->_items = array();
     }
 
     /**
+     * @param string $itemType
+     */
+    protected function _setItemType($itemType)
+    {
+        switch (strtolower($itemType)) {
+            case 'bool':
+                $itemType = 'boolean';
+                break;
+
+            case 'int':
+                $itemType = 'integer';
+                break;
+
+            case 'float':
+                $itemType = 'double';
+                break;
+        }
+
+        $this->_itemType = (string) $itemType;
+    }
+
+    /**
      * @return string
      */
-    public function getItemClass()
+    public function getItemType()
     {
-        return $this->_itemClass;
+        return $this->_itemType;
     }
 
     /**
@@ -111,23 +132,28 @@ class Webex_Collection_Collection implements Countable, ArrayAccess, IteratorAgg
     }
 
     /**
-     * @param  string $value
-     * @return void
+     * @param  mixed $item
+     * @return mixed
      * @throws InvalidArgumentException
      */
     protected function _checkItemType($item)
     {
-        if (!is_object($item)) {
-            throw new InvalidArgumentException('Item must be an object');
-        }
-        if ($this->_itemClass && !$item instanceof $this->_itemClass) {
+        if ($this->_itemType &&
+            !($item instanceof $this->_itemType || gettype($item) === $this->_itemType)
+        ) {
             throw new InvalidArgumentException(sprintf(
-                'Item must be an instance of %s class', $this->_itemClass
+                'Item must be of the type %s, %s given',
+                $this->_itemType,
+                is_object($item) ? get_class($item) : gettype($item)
             ));
         }
         return $item;
     }
 
+    /**
+     * @param mixed $key
+     * @return mixed
+     */
     public function offsetGet($key)
     {
         return isset($this->_items[$key]) ? $this->_items[$key] : null;

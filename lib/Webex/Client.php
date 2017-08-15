@@ -3,7 +3,7 @@
 class Webex_Client
 {
     /**
-     * @var Webex_Type_SecurityContext
+     * @var Webex_Model_SecurityContext
      */
     protected $_securityContext;
 
@@ -18,12 +18,12 @@ class Webex_Client
     protected $_services;
 
     /**
-     * @param array|Webex_Type_SecurityContext $securityContext
+     * @param array|Webex_Model_SecurityContext $securityContext
      */
     public function __construct($securityContext)
     {
-        if (!$securityContext instanceof Webex_Type_SecurityContext) {
-            $securityContext = new Webex_Type_SecurityContext($securityContext);
+        if (!$securityContext instanceof Webex_Model_SecurityContext) {
+            $securityContext = new Webex_Model_SecurityContext($securityContext);
         }
 
         $this->_securityContext = $securityContext;
@@ -68,7 +68,7 @@ class Webex_Client
     }
 
     /**
-     * @return Webex_Type_SecurityContext
+     * @return Webex_Model_SecurityContext
      */
     public function getSecurityContext()
     {

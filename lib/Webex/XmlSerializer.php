@@ -515,6 +515,9 @@ class Webex_XmlSerializer
             if ($num && empty($parent)) {
                 throw new Exception('Numeric-keyed array requires a parent element to be set');
             }
+            if ($parent) {
+                $parent = Webex_XmlDataExtractor::tagName($parent);
+            }
             $xml = '';
             if ($num) {
                 // numeric keys cannot act as parents, hence they are not
@@ -530,6 +533,7 @@ class Webex_XmlSerializer
                     if (is_array($val)) {
                         $xml .= $this->serialize($val, $key);
                     } else {
+                        $key = Webex_XmlDataExtractor::tagName($key);
                         $xml .= '<' . $key . '>' . $this->serialize($val) . '</' . $key . '>';
                     }
                 }

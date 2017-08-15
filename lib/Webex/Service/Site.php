@@ -55,16 +55,17 @@ class Webex_Service_Site extends Webex_Service_Abstract
         return $timeZones;
     } // }}}
 
-    public function getSite($eventCenter = false)
+    /**
+     * @param Webex_Model_Site_GetSite|array $getSite
+     * @return Webex_Model_Site_GetSiteResponse
+     */
+    public function getSite($getSite = null)
     {
-        $data = array();
-
-        if ($eventCenter) {
-            $data['returnSettings']['eventCenter'] = (bool) $eventCenter;
+        if ($getSite && !$getSite instanceof Webex_Model_Site_GetSite) {
+            $getSite = new Webex_Model_Site_GetSite($getSite);
         }
 
-        $response = $this->_webex->transmit(self::GET_SITE, $this->_serializer->serialize($data));
-        throw new Exception('Not implemented');
+        return $this->sendRequest(self::GET_SITE, $getSite, 'Webex_Model_Site_GetSiteResponse');
     }
 
     public function toBool($value)
@@ -72,4 +73,5 @@ class Webex_Service_Site extends Webex_Service_Abstract
         $value = strtoupper((string) $value);
         return ($value === 'TRUE');
     }
+
 }

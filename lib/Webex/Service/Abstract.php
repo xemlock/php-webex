@@ -77,4 +77,22 @@ abstract class Webex_Service_Abstract
 
         return $nodes->body->bodyContent;
     } // }}}
+
+    public function sendRequest($service, $payload, $responseClass)
+    {
+        $start = microtime(true);
+        $response = $this->_webex->transmit($service, $payload);
+        $start2 = microtime(true);
+        printf("Transmitted in %.2fs\n", $start2 - $start);
+
+        $bodyContent = $this->_parseResponse($response);
+
+        $extractor = new Webex_XmlDataExtractor();
+        $data = $extractor->xmlToArray($bodyContent);
+
+        $responseObject = new $responseClass($data);
+        printf("Response instantiated in %.2fs\n", microtime(true) - $start2);
+
+        return $responseObject;
+    }
 }
