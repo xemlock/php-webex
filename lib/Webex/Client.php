@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @property Webex_Service_Meeting $meeting
+ * @property Webex_Service_Site $site
+ * @property Webex_Service_User $user
+ */
 class Webex_Client
 {
     /**

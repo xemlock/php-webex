@@ -64,6 +64,11 @@ class Webex_Collection_Collection implements Countable, ArrayAccess, IteratorAgg
         return $this;
     }
 
+    public function get($key)
+    {
+        return isset($this->_items[$key]) ? $this->_items[$key] : null;
+    }
+
     /**
      * @param  int $key
      * @return object|null
@@ -103,6 +108,14 @@ class Webex_Collection_Collection implements Countable, ArrayAccess, IteratorAgg
     {
         $this->_items = array();
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function first()
+    {
+        return reset($this->_items);
     }
 
     /**
@@ -156,7 +169,7 @@ class Webex_Collection_Collection implements Countable, ArrayAccess, IteratorAgg
      */
     public function offsetGet($key)
     {
-        return isset($this->_items[$key]) ? $this->_items[$key] : null;
+        return $this->get($key);
     }
 
     /**
