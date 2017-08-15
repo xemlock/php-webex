@@ -3,10 +3,16 @@
 class Webex_Model_Site_MetaData extends Webex_Model_Entity
 {
     /**
+     * If TRUE, specifies a Enterprise Edition site; if FALSE, not.
      * @var bool
      */
     protected $_isEnterprise;
 
+    /**
+     * The services (Meeting Center, Event Center, Training Center, Support
+     * Center, and Sales Center) that are supported for this site.
+     * @var Webex_Collection_Collection<string>
+     */
     protected $_serviceType;
 
     /**
@@ -15,11 +21,13 @@ class Webex_Model_Site_MetaData extends Webex_Model_Entity
     protected $_meetingTypes;
 
     /**
+     * Full name for the site.
      * @var string
      */
     protected $_siteName;
 
     /**
+     * Domain name for the site, for example, acme.webex.com.
      * @var Webex_Collection_Collection<string>
      */
     protected $_brandName;
@@ -99,10 +107,13 @@ class Webex_Model_Site_MetaData extends Webex_Model_Entity
     }
 
     /**
-     * @return mixed
+     * @return Webex_Collection_Collection<string>
      */
     public function getServiceType()
     {
+        if (!$this->_serviceType) {
+            $this->_serviceType = new Webex_Collection_Collection('string');
+        }
         return $this->_serviceType;
     }
 
@@ -110,9 +121,9 @@ class Webex_Model_Site_MetaData extends Webex_Model_Entity
      * @param mixed $serviceType
      * @return Webex_Model_Site_MetaData
      */
-    public function setServiceType($serviceType)
+    public function addServiceType($serviceType)
     {
-        $this->_serviceType = $serviceType;
+        $this->getServiceType()->add((string) $serviceType);
         return $this;
     }
 

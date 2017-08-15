@@ -7,19 +7,16 @@ class Webex_Model_Site_Site extends Webex_Model_Entity
      */
     protected $_metaData;
 
-    public function __construct(array $data = null)
-    {
-        $this->_metaData = new Webex_Model_Site_MetaData();
-        parent::__construct($data);
-    }
-
     /**
      * @param array $metaData
      * @return $this
      */
-    public function setMetaData(array $metaData)
+    public function setMetaData($metaData)
     {
-        $this->_metaData->setFromArray($metaData);
+        if (!$metaData instanceof Webex_Model_Site_MetaData) {
+            $metaData = new Webex_Model_Site_MetaData($metaData);
+        }
+        $this->_metaData = $metaData;
         return $this;
     }
 

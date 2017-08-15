@@ -151,7 +151,7 @@ class Webex_Collection_Collection implements Countable, ArrayAccess, IteratorAgg
     }
 
     /**
-     * @param mixed $key
+     * @param int $key
      * @return mixed
      */
     public function offsetGet($key)
@@ -170,13 +170,14 @@ class Webex_Collection_Collection implements Countable, ArrayAccess, IteratorAgg
     {
         if ($key === null) {
             // [] notation
-            return $this->add($value);
+            $this->add($value);
+            return;
         }
 
         $key = (int) $key;
 
         // must be within current range
-        if ($key < 0 || count($this->_item) <= $key) {
+        if ($key < 0 || count($this->_items) <= $key) {
             throw new RangeException('Invalid offset provided');
         }
 
