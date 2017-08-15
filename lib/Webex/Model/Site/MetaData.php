@@ -133,7 +133,7 @@ class Webex_Model_Site_MetaData extends Webex_Model_Entity
     public function getMeetingTypes()
     {
         if (!$this->_meetingTypes) {
-            $this->_meetingTypes = new Webex_Collection_Collection('Webex_Model_Site_MetaData_MeetingType');
+            $this->_meetingTypes = new Webex_Collection_Collection(Webex_Model_Site_MetaData_MeetingType::CLASS_NAME);
         }
         return $this->_meetingTypes;
     }

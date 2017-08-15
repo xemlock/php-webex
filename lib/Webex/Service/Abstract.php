@@ -93,6 +93,7 @@ abstract class Webex_Service_Abstract
         $responseObject = new $responseClass($data);
         printf("Response instantiated in %.2fs\n", microtime(true) - $start2);
 
+        // file_put_contents($service . '.xml', $response);
         return $responseObject;
     }
 }

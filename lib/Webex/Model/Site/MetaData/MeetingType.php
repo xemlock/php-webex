@@ -2,6 +2,8 @@
 
 class Webex_Model_Site_MetaData_MeetingType extends Webex_Model_Entity
 {
+    const CLASS_NAME = __CLASS__;
+
     /**
      * @var int
      */
